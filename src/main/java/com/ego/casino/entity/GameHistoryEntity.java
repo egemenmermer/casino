@@ -19,7 +19,7 @@ public class GameHistoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long gameId;
 
     @Column(nullable = false)
     private String gameName;
@@ -40,7 +40,7 @@ public class GameHistoryEntity {
     }
 
     public GameHistoryEntity(Long id, String gameName, Timestamp playDate, BigDecimal betAmount, BigDecimal oldBalance, BigDecimal newBalance) {
-        this.id = id;
+        this.gameId = id;
         this.gameName = gameName;
         this.playDate = playDate;
         this.betAmount = betAmount;
@@ -51,11 +51,11 @@ public class GameHistoryEntity {
 
 
     public Long getId() {
-        return id;
+        return gameId;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.gameId = id;
     }
 
     public String getGameName() {

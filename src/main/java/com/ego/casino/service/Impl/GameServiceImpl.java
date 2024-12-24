@@ -11,7 +11,6 @@ import com.ego.casino.repository.GameHistoryRepository;
 import com.ego.casino.repository.GameRepository;
 import com.ego.casino.repository.UserRepository;
 import com.ego.casino.service.GameService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +27,7 @@ public class GameServiceImpl implements GameService {
     @Autowired
     private GameRepository gameRepository;
 
-    ModelMapper modelMapper;
+
 
     @Autowired
     private UserRepository userRepository;
@@ -42,10 +41,14 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public List<GameDto> getAllGames() {
+        List<GameEntity> gameEntities = gameRepository.findAll();
         return gameRepository
                 .findAll()
                 .stream()
-                .map(gameEntity -> modelMapper.map(gameEntity, GameDto.class))
+                .map(gameEntity -> new GameDto(
+                        gameEntity.getGameName(),
+                        gameEntity.getWinChance(),
+                        gameEntity.getMinAmount()))
                 .collect(Collectors.toList());
     }
 

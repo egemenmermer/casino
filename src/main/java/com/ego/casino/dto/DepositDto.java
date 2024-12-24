@@ -1,5 +1,6 @@
 package com.ego.casino.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Log4j2
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DepositDto {
 
     private Long id;

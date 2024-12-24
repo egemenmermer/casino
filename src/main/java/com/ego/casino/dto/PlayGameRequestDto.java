@@ -1,5 +1,6 @@
 package com.ego.casino.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +10,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Builder
 @Log4j2
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PlayGameRequestDto {
 
     private String username;

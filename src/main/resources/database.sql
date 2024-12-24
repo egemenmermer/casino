@@ -35,4 +35,4 @@ VALUES ('Gates Of Olympus', 0.20, 0.45),
        ('Sweet Bonanza', 0.20, 0.10),
        ('Saray Rüyası', 0.20, 0.75);
 
-SELECT * FROM USERS;
+SELECT * FROM game;

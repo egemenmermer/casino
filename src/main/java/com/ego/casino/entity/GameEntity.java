@@ -12,19 +12,21 @@ import java.math.BigDecimal;
 @Builder
 @Log4j2
 @Entity
+@Table(name = "game")
 public class GameEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "game_id")
     private Long id;
 
-    @Column(nullable = false)
-    private String gameName;
+    @Column(nullable = false, name = "game_name")
+    private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "win_chance")
     private BigDecimal winChance;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "min_amount")
     private BigDecimal minAmount;
 
     public GameEntity() {
@@ -32,7 +34,7 @@ public class GameEntity {
 
     public GameEntity(Long id, String gameName, BigDecimal winChance, BigDecimal minAmount) {
         this.id = id;
-        this.gameName = gameName;
+        this.name = gameName;
         this.winChance = winChance;
         this.minAmount = minAmount;
     }
@@ -46,11 +48,11 @@ public class GameEntity {
     }
 
     public String getGameName() {
-        return gameName;
+        return name;
     }
 
     public void setGameName(String gameName) {
-        this.gameName = gameName;
+        this.name = gameName;
     }
 
     public BigDecimal getWinChance() {

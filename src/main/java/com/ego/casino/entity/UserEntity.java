@@ -11,8 +11,6 @@ import lombok.extern.log4j.Log4j2;
 
 import java.math.BigDecimal;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @Log4j2
 @Entity
@@ -29,6 +27,15 @@ public class UserEntity {
 
     @Column(nullable = false)
     private BigDecimal balance;
+
+    public UserEntity(Long id, String username, BigDecimal balance) {
+        this.id = id;
+        this.username = username;
+        this.balance = balance;
+    }
+
+    public UserEntity() {
+    }
 
     public Long getId() {
         return id;
