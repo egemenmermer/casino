@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface GameRepository extends JpaRepository<GameEntity, Long> {
-    Optional<GameEntity> findByName(String name);
+    Optional<GameEntity> findByName(String gameName);
 }

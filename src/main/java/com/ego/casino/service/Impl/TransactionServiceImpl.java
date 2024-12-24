@@ -21,7 +21,9 @@ public class TransactionServiceImpl implements TransactionService {
         UserEntity user = userRepository.findByUsername(username).orElseThrow(
                 () -> new RuntimeException("User not found!")
         );
-        UserDto userDto = new UserDto(user.getUsername(),user.setBalance(BigDecimal.valueOf(amount)));
+        UserDto userDto = new UserDto();
+        userDto.setUsername(user.getUsername());
+        userDto.setBalance(user.getBalance().add(BigDecimal.valueOf(amount)));
 
         return ResponseEntity.ok(userDto);
     }
