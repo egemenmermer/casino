@@ -41,8 +41,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<GameHistoryDto> getHistory(String username) {
 
-        List<GameHistoryEntity> gameHistoryEntities = gameHistoryRepository.findAll();
-
         return gameHistoryRepository
                 .findAll()
                 .stream()

@@ -36,3 +36,4 @@ VALUES ('Gates Of Olympus', 0.20, 0.45),
        ('Saray Rüyası', 0.20, 0.75);
 
 SELECT * FROM game;
+SELECT * FROM users;

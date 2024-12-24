@@ -1,5 +1,6 @@
 package com.ego.casino.service.Impl;
 
+import com.ego.casino.dto.DepositDto;
 import com.ego.casino.dto.UserDto;
 import com.ego.casino.entity.UserEntity;
 import com.ego.casino.repository.UserRepository;
@@ -17,14 +18,16 @@ public class TransactionServiceImpl implements TransactionService {
     UserRepository userRepository;
 
     @Override
-    public ResponseEntity<UserDto> topUpBalance(String username, Double amount) {
+    public ResponseEntity<DepositDto> topUpBalance(String username, Double amount) {
         UserEntity user = userRepository.findByUsername(username).orElseThrow(
                 () -> new RuntimeException("User not found!")
         );
-        UserDto userDto = new UserDto();
-        userDto.setUsername(user.getUsername());
-        userDto.setBalance(user.getBalance().add(BigDecimal.valueOf(amount)));
+        DepositDto depositDto = new DepositDto();
+        depositDto.setUsername(user.getUsername());
+        depositDto.setBalance(user.getBalance().add(BigDecimal.valueOf(amount)));
+        user.setBalance(user.getBalance().add(BigDecimal.valueOf(amount)));
+        userRepository.save(user);
 
-        return ResponseEntity.ok(userDto);
+        return ResponseEntity.ok(depositDto);
     }
 }
