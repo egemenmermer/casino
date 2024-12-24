@@ -12,13 +12,13 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class HistoryDto {
+public class GameHistoryDto {
 
     private Long id;
-    private String game_name;
-    private Timestamp play_date;
-    private BigDecimal bet_amount;
-    private BigDecimal old_balance;
-    private BigDecimal new_balance;
+    private String gameName;
+    private Timestamp playDate;
+    private BigDecimal betAmount;
+    private BigDecimal oldBalance;
+    private BigDecimal newBalance;
 
 }

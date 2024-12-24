@@ -1,6 +1,5 @@
 package com.ego.casino.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,10 +13,9 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 @Log4j2
-public class GameDto {
+public class PlayGameResponseDto {
 
-    private Long id;
-    private String gameName;
-    private BigDecimal winChance;
-    private BigDecimal minAmount;
+    private String message;
+    private BigDecimal oldBalance;
+    private BigDecimal newBalance;
 }
