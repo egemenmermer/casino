@@ -53,24 +53,29 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public PlayGameResponseDto playGame(PlayGameRequestDto playGameRequestDto) {
+    public PlayGameResponseDto playGame(String gameName, PlayGameRequestDto playGameRequestDto) {
 
         UserEntity userEntity = userRepository.findByUsername(playGameRequestDto.getUsername()).orElseThrow(
                 () -> new ResourceNotFoundException("Username: " + playGameRequestDto.getUsername() + "not found")
         );
 
-        GameEntity gameEntity = gameRepository.findByName(playGameRequestDto.getGameName()).orElseThrow(
-                () -> new ResourceNotFoundException("Game: " + playGameRequestDto.getGameName() + "not found")
+        GameEntity gameEntity = gameRepository.findByName(gameName).orElseThrow(
+                () -> new ResourceNotFoundException("Game: " + gameName + "not found")
         );
 
         boolean result = isWinner(gameEntity.getWinChance().doubleValue());
 
+
         BigDecimal oldBalance = userEntity.getBalance();
         BigDecimal newBalance = calculateNewbalance(userEntity.getBalance(), playGameRequestDto.getBetAmount(), gameEntity.getWinChance().doubleValue(), result);
-        saveGameHistory(userEntity.getBalance(), newBalance, playGameRequestDto, gameEntity);
+        saveGameHistory(userEntity,gameEntity, userEntity.getBalance(), newBalance, playGameRequestDto, gameEntity, gameName);
         updateUserBalance(userEntity, newBalance);
 
-        return new PlayGameResponseDto("You win!", oldBalance, newBalance);
+        if(result) {
+            return new PlayGameResponseDto("You win!", oldBalance, newBalance);
+        }else{
+            return new PlayGameResponseDto("You lost!", oldBalance, newBalance);
+        }
     }
 
 
@@ -80,7 +85,7 @@ public class GameServiceImpl implements GameService {
     }
 
     public double calculateWinAmount(double betAmount, double winRate){
-        return betAmount * (100 / winRate);
+        return betAmount * (1 / winRate);
     }
 
     private BigDecimal calculateNewbalance(BigDecimal currentBalance, double betAmount, double winRate, boolean isWinner){
@@ -92,12 +97,14 @@ public class GameServiceImpl implements GameService {
         }
     }
 
-    private void saveGameHistory(BigDecimal oldBalance, BigDecimal newBalance, PlayGameRequestDto playGameRequestDto, GameEntity gameEntity ){
+    private void saveGameHistory(UserEntity userId, GameEntity gameId, BigDecimal oldBalance, BigDecimal newBalance, PlayGameRequestDto playGameRequestDto, GameEntity gameEntity , String gameName ){
         GameHistoryEntity gameHistoryEntity = new GameHistoryEntity();
+        gameHistoryEntity.setGame(gameId);
+        gameHistoryEntity.setUser(userId);
         gameHistoryEntity.setOldBalance(oldBalance);
         gameHistoryEntity.setNewBalance(newBalance);
         gameHistoryEntity.setBetAmount(BigDecimal.valueOf(playGameRequestDto.getBetAmount()));
-        gameHistoryEntity.setGameName(playGameRequestDto.getGameName());
+        gameHistoryEntity.setGameName(gameName);
         gameHistoryEntity.setPlayDate(Timestamp.valueOf(LocalDateTime.now()));
         gameHistoryRepository.save(gameHistoryEntity);
     }

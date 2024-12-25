@@ -9,7 +9,7 @@ import java.util.List;
 public interface GameService {
 
     public List<GameDto> getAllGames();
-    public PlayGameResponseDto playGame(PlayGameRequestDto playGameRequestDto);
+    public PlayGameResponseDto playGame(String gameName, PlayGameRequestDto playGameRequestDto);
 
 
 }

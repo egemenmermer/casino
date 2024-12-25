@@ -14,6 +14,7 @@ public class DepositDto {
 
     private Long id;
     private String username;
+    private String message;
     private BigDecimal balance;
     private BigDecimal depositAmount;
 
@@ -22,6 +23,18 @@ public class DepositDto {
         this.username = username;
         this.balance = balance;
         this.depositAmount = depositAmount;
+    }
+
+    public DepositDto(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public DepositDto() {

@@ -6,6 +6,7 @@ import com.ego.casino.entity.UserEntity;
 import com.ego.casino.repository.UserRepository;
 import com.ego.casino.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +23,16 @@ public class TransactionServiceImpl implements TransactionService {
         UserEntity user = userRepository.findByUsername(username).orElseThrow(
                 () -> new RuntimeException("User not found!")
         );
-        DepositDto depositDto = new DepositDto();
-        depositDto.setUsername(user.getUsername());
-        depositDto.setBalance(user.getBalance().add(BigDecimal.valueOf(amount)));
-        user.setBalance(user.getBalance().add(BigDecimal.valueOf(amount)));
-        userRepository.save(user);
 
-        return ResponseEntity.ok(depositDto);
+        if(amount > 0){
+            DepositDto depositDto = new DepositDto();
+            depositDto.setUsername(user.getUsername());
+            depositDto.setBalance(user.getBalance().add(BigDecimal.valueOf(amount)));
+            user.setBalance(user.getBalance().add(BigDecimal.valueOf(amount)));
+            userRepository.save(user);
+            return ResponseEntity.ok(depositDto);
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new DepositDto("Topup amount can't be negative!"));
+        }
     }
 }

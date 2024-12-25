@@ -37,3 +37,4 @@ VALUES ('Gates Of Olympus', 0.20, 0.45),
 
 SELECT * FROM game;
 SELECT * FROM users;
+SELECT * FROM game_history;
