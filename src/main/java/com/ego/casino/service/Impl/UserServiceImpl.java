@@ -21,7 +21,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private GameHistoryRepository gameHistoryRepository;
 
-    //private ModelMapper modelMapper;
 
     @Override
     public ResponseEntity<UserDto> retrieveBalance(String username) {
@@ -50,18 +49,4 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
-    /*
-    @Override
-    public UserDto EntitytoDto(UserEntity userEntity) {
-        UserDto userDto = modelMapper.map(userEntity, UserDto.class);
-        return userDto;
-    }
-
-    @Override
-    public UserEntity DtotoEntity(UserDto userDto) {
-        UserEntity userEntity = modelMapper.map(userDto, UserEntity.class);
-        return userEntity;
-    }
-
-     */
 }
