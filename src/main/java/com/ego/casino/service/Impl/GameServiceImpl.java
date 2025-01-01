@@ -84,7 +84,7 @@ public class GameServiceImpl implements GameService {
         return randomValue < winRate;
 
     }
-
+    //test
     public double calculateWinAmount(double betAmount, double winRate){
         return betAmount * (1 / winRate);
     }
