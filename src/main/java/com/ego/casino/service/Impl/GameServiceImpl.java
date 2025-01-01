@@ -82,6 +82,7 @@ public class GameServiceImpl implements GameService {
     public boolean isWinner(double winRate){
         Double randomValue = Math.random();
         return randomValue < winRate;
+
     }
 
     public double calculateWinAmount(double betAmount, double winRate){
