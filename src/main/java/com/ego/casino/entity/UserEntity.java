@@ -19,19 +19,19 @@ public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(updatable = false, nullable = false, name = "user_id")
+    @Column(updatable = false, nullable = false, name = "id")
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, name = "username")
     private String username;
 
-    @Column(nullable = false)
-    private BigDecimal balance;
+    @Column(unique = true, name = "email")
+    private String email;
 
-    public UserEntity(Long id, String username, BigDecimal balance) {
+    public UserEntity(Long id, String username, String email) {
         this.id = id;
         this.username = username;
-        this.balance = balance;
+        this.email = email;
     }
 
     public UserEntity() {
@@ -53,11 +53,11 @@ public class UserEntity {
         this.username = username;
     }
 
-    public BigDecimal getBalance() {
-        return balance;
+    public String getEmail() {
+        return email;
     }
 
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

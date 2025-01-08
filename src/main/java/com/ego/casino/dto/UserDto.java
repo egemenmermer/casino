@@ -16,20 +16,15 @@ public class UserDto {
 
     private long id;
     private String username;
-    private BigDecimal balance;
+    private String email;
 
-    public UserDto(String username, BigDecimal balance) {
+    public UserDto(long id, String username, String email) {
+        this.id = id;
         this.username = username;
-        this.balance = balance;
+        this.email = email;
     }
 
     public UserDto() {
-    }
-
-    public UserDto(long id, String username, BigDecimal balance) {
-        this.id = id;
-        this.username = username;
-        this.balance = balance;
     }
 
     public long getId() {
@@ -48,11 +43,11 @@ public class UserDto {
         this.username = username;
     }
 
-    public BigDecimal getBalance() {
-        return balance;
+    public String getEmail() {
+        return email;
     }
 
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

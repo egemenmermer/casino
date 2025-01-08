@@ -1,5 +1,7 @@
 package com.ego.casino.dto;
 
+import com.ego.casino.entity.AccountEntity;
+import com.ego.casino.entity.GameEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,23 +16,26 @@ import java.sql.Timestamp;
 public class GameHistoryDto {
 
     private Long id;
-    private String gameName;
     private Timestamp playDate;
     private BigDecimal betAmount;
     private BigDecimal oldBalance;
     private BigDecimal newBalance;
+    private String status;
+    private GameEntity game;
+    private AccountEntity account;
 
-
-    public GameHistoryDto() {
-    }
-
-    public GameHistoryDto(Long id, String gameName, Timestamp playDate, BigDecimal betAmount, BigDecimal oldBalance, BigDecimal newBalance) {
+    public GameHistoryDto(Long id, Timestamp playDate, BigDecimal betAmount, BigDecimal oldBalance, BigDecimal newBalance, String status, GameEntity game, AccountEntity account) {
         this.id = id;
-        this.gameName = gameName;
         this.playDate = playDate;
         this.betAmount = betAmount;
         this.oldBalance = oldBalance;
         this.newBalance = newBalance;
+        this.status = status;
+        this.game = game;
+        this.account = account;
+    }
+
+    public GameHistoryDto() {
     }
 
     public Long getId() {
@@ -39,14 +44,6 @@ public class GameHistoryDto {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getGameName() {
-        return gameName;
-    }
-
-    public void setGameName(String gameName) {
-        this.gameName = gameName;
     }
 
     public Timestamp getPlayDate() {
@@ -79,5 +76,29 @@ public class GameHistoryDto {
 
     public void setNewBalance(BigDecimal newBalance) {
         this.newBalance = newBalance;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public GameEntity getGame() {
+        return game;
+    }
+
+    public void setGame(GameEntity game) {
+        this.game = game;
+    }
+
+    public AccountEntity getAccount() {
+        return account;
+    }
+
+    public void setAccount(AccountEntity account) {
+        this.account = account;
     }
 }

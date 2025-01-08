@@ -1,7 +1,6 @@
 package com.ego.casino.service.Impl;
 
-import com.ego.casino.dto.DepositDto;
-import com.ego.casino.dto.UserDto;
+import com.ego.casino.dto.TransactionDto;
 import com.ego.casino.entity.UserEntity;
 import com.ego.casino.repository.UserRepository;
 import com.ego.casino.service.TransactionService;
@@ -19,20 +18,20 @@ public class TransactionServiceImpl implements TransactionService {
     UserRepository userRepository;
 
     @Override
-    public ResponseEntity<DepositDto> topUpBalance(String username, Double amount) {
+    public ResponseEntity<TransactionDto> topUpBalance(String username, Double amount) {
         UserEntity user = userRepository.findByUsername(username).orElseThrow(
                 () -> new RuntimeException("User not found!")
         );
 
         if(amount > 0){
-            DepositDto depositDto = new DepositDto();
-            depositDto.setUsername(user.getUsername());
-            depositDto.setBalance(user.getBalance().add(BigDecimal.valueOf(amount)));
+            TransactionDto transactionDto = new TransactionDto();
+            transactionDto.setUsername(user.getUsername());
+            transactionDto.setBalance(user.getBalance().add(BigDecimal.valueOf(amount)));
             user.setBalance(user.getBalance().add(BigDecimal.valueOf(amount)));
             userRepository.save(user);
-            return ResponseEntity.ok(depositDto);
+            return ResponseEntity.ok(transactionDto);
         }else{
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new DepositDto("Topup amount can't be negative!"));
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new TransactionDto("Topup amount can't be negative!"));
         }
     }
 }

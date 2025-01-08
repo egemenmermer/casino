@@ -16,12 +16,13 @@ import java.math.BigDecimal;
 public class GameDto {
 
     private Long id;
-    private String gameName;
+    private String name;
     private BigDecimal winChance;
     private BigDecimal minAmount;
 
-    public GameDto( String gameName, BigDecimal winChance, BigDecimal minAmount) {
-        this.gameName = gameName;
+    public GameDto(Long id, String name, BigDecimal winChance, BigDecimal minAmount) {
+        this.id = id;
+        this.name = name;
         this.winChance = winChance;
         this.minAmount = minAmount;
     }
@@ -37,12 +38,12 @@ public class GameDto {
         this.id = id;
     }
 
-    public String getGameName() {
-        return gameName;
+    public String getName() {
+        return name;
     }
 
-    public void setGameName(String gameName) {
-        this.gameName = gameName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public BigDecimal getWinChance() {

@@ -10,65 +10,58 @@ import java.sql.Timestamp;
 @Builder
 @Log4j2
 @Entity
-@Table(name = "game_history")
+@Table(name = "game_history_log")
 public class GameHistoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long historyId;
+    private Long id;
 
-    @Column(nullable = false)
-    private String gameName;
-
-    @Column(nullable = false)
+    @Column(nullable = false, name = "play_date")
     private Timestamp playDate;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "bet_amount")
     private BigDecimal betAmount;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "old_balance")
     private BigDecimal oldBalance;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "new_balance")
     private BigDecimal newBalance;
 
+    @Column(nullable = false, name = "status")
+    private String status;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
+    @JoinColumn(name = "account_id", nullable = false)
+    private AccountEntity account;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id", nullable = false)
     private GameEntity game;
 
-    public GameHistoryEntity(Long historyId, String gameName, Timestamp playDate, BigDecimal betAmount, BigDecimal oldBalance, BigDecimal newBalance, UserEntity user, GameEntity game) {
-        this.historyId = historyId;
-        this.gameName = gameName;
+
+    public GameHistoryEntity(Long id, Timestamp playDate, BigDecimal betAmount, BigDecimal oldBalance, BigDecimal newBalance, String status, AccountEntity account, GameEntity game) {
+        this.id = id;
         this.playDate = playDate;
         this.betAmount = betAmount;
         this.oldBalance = oldBalance;
         this.newBalance = newBalance;
-        this.user = user;
+        this.status = status;
+        this.account = account;
         this.game = game;
     }
 
     public GameHistoryEntity() {
     }
 
-    public Long getHistoryId() {
-        return historyId;
+    public Long getId() {
+        return id;
     }
 
-    public void setHistoryId(Long historyId) {
-        this.historyId = historyId;
-    }
-
-    public String getGameName() {
-        return gameName;
-    }
-
-    public void setGameName(String gameName) {
-        this.gameName = gameName;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Timestamp getPlayDate() {
@@ -103,12 +96,20 @@ public class GameHistoryEntity {
         this.newBalance = newBalance;
     }
 
-    public UserEntity getUser() {
-        return user;
+    public String getStatus() {
+        return status;
     }
 
-    public void setUser(UserEntity user) {
-        this.user = user;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public AccountEntity getAccount() {
+        return account;
+    }
+
+    public void setAccount(AccountEntity account) {
+        this.account = account;
     }
 
     public GameEntity getGame() {

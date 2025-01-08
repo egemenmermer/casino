@@ -17,10 +17,10 @@ public class GameEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "game_id")
+    @Column(name = "id")
     private Long id;
 
-    @Column(nullable = false, name = "game_name")
+    @Column(nullable = false, name = "name")
     private String name;
 
     @Column(nullable = false, name = "win_chance")
@@ -47,12 +47,12 @@ public class GameEntity {
         this.id = id;
     }
 
-    public String getGameName() {
+    public String getName() {
         return name;
     }
 
-    public void setGameName(String gameName) {
-        this.name = gameName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public BigDecimal getWinChance() {
