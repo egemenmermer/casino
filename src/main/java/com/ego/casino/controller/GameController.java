@@ -17,14 +17,5 @@ import java.util.List;
 @RequestMapping("/api/v1/games")
 public class GameController {
 
-    @Autowired
-    private GameService gameService;
 
-
-
-    @PostMapping("/play/{gameName}")
-    public ResponseEntity<PlayGameResponseDto> playGame(@PathVariable String gameName, @RequestBody PlayGameRequestDto playGameRequestDto){
-        PlayGameResponseDto playGameResponseDto = gameService.playGame(gameName, playGameRequestDto);
-        return new ResponseEntity<>(playGameResponseDto, HttpStatus.OK);
-    }
 }

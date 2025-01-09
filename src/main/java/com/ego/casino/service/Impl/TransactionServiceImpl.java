@@ -39,4 +39,17 @@ public class TransactionServiceImpl implements TransactionService {
         return ResponseEntity.ok(new TransactionDto(account.getId(),amount, transactionType, account.getBalance(), LocalDateTime.now()));
     }
 
+    public double calculateWinAmount(double betAmount, double winRate){
+        return betAmount * (1 / winRate);
+    }
+
+    public BigDecimal calculateNewbalance(BigDecimal currentBalance, double betAmount, double winRate, boolean isWinner){
+        if(isWinner){
+            double winAmount = calculateWinAmount(betAmount, winRate);
+            return currentBalance.add(BigDecimal.valueOf(winAmount));
+        }else{
+            return currentBalance.subtract(BigDecimal.valueOf(betAmount));
+        }
+    }
+
 }
