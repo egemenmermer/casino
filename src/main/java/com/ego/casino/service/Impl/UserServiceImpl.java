@@ -18,19 +18,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private GameHistoryRepository gameHistoryRepository;
-
-
-    @Override
-    public ResponseEntity<UserDto> retrieveBalance(String username) {
-        UserEntity user = userRepository.findByUsername(username).orElseThrow(
-                () -> new RuntimeException("User not found!")
-        );
-        UserDto userDto = new UserDto(user.getId(),user.getUsername(),user.getBalance());
-
-        return ResponseEntity.ok(userDto);
-    }
 
     @Override
     public ResponseEntity<UserDto> retrieveUser(Long id) {

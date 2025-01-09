@@ -7,18 +7,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/user/")
-public class TransactionController {
+@RequestMapping("/api/v1/account/")
+public class AccountController {
 
     @Autowired
     private  TransactionService transactionService;
 
 
-    @PutMapping("/{username}/balance/topup")
-    public ResponseEntity<TransactionDto> deposit(@PathVariable String username, @RequestBody TransactionDto transactionDto) {
+    @PutMapping("/{account_id}/deposit")
+    public ResponseEntity<TransactionDto> deposit(@RequestHeader("X-USER-ID") Long id, @PathVariable Long accountId, @RequestBody TransactionDto transactionDto) {
 
-        TransactionDto topUpBalance = transactionService.deposit(username, transactionDto.getDepositAmount().doubleValue()).getBody();
+        TransactionDto topUpBalance = transactionService.deposit(id, transactionDto.getAmount().doubleValue()).getBody();
         return ResponseEntity.ok(topUpBalance);
-
     }
 }

@@ -10,10 +10,12 @@ public class AccountDto {
     private UserEntity user;
 
 
-    public AccountDto(Long id, BigDecimal balance, UserEntity user) {
+    public AccountDto(Long id, BigDecimal balance) {
         this.id = id;
         this.balance = balance;
-        this.user = user;
+    }
+
+    public AccountDto() {
     }
 
     public UserEntity getUser() {
