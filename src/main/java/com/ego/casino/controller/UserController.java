@@ -19,19 +19,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/{username}/balance")
-    public ResponseEntity<UserDto> retrieveBalance(@PathVariable String username) {
-
-        UserDto userDto = userService.retrieveBalance(username).getBody();
-        return ResponseEntity.ok(userDto);
-    }
-
-    @GetMapping("/{username}/game-history")
-    public ResponseEntity<List<GameHistoryDto>> getGameHistory(@PathVariable String username) {
-        List<GameHistoryDto> games = userService.getHistory(username);
-        return new ResponseEntity<>(games, HttpStatus.OK);
-    }
-
 
     @GetMapping("/me")
     public ResponseEntity<UserDto> retrieveUser(@RequestHeader("X-USER-ID") Long userId) {

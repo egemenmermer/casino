@@ -2,19 +2,21 @@ package com.ego.casino.controller;
 
 import com.ego.casino.dto.GameDto;
 import com.ego.casino.service.GameListingService;
+import com.ego.casino.service.Impl.GameListingServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-@Controller
+@RequestMapping("/api/v1/games")
 public class GameListingController {
 
     @Autowired
-    GameListingService gameListingService;
+    GameListingServiceImpl gameListingService;
 
     @GetMapping
     public ResponseEntity<List<GameDto>> getAllGames(){

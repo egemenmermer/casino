@@ -9,10 +9,7 @@ import java.util.List;
 
 public interface UserService {
 
-
-    public ResponseEntity<UserDto> retrieveBalance(String username);
     public ResponseEntity<UserDto> retrieveUser(Long id);
-    public List<GameHistoryDto> getHistory(String username);
 
 
 }

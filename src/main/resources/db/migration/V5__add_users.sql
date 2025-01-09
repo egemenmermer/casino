@@ -1,19 +1,12 @@
+-- Insert users (let the database generate IDs)
 INSERT INTO users (username)
-VALUES ('egemen');
+VALUES
+    ('egemen'),
+    ('osman'),
+    ('cagatay');
 
-INSERT INTO users (username)
-VALUES ('osman');
-
-INSERT INTO users (username)
-VALUES ('cagatay');
-
-INSERT INTO account (user_id, balance)
-VALUES (1, 1000);
-
-INSERT INTO account (user_id, balance)
-VALUES (2, 1000);
-
-INSERT INTO account (user_id, balance)
-VALUES (3, 1000);
-
-
+-- Insert accounts linked to users using the generated IDs
+INSERT INTO account (user_id, balance, created_at)
+SELECT id, 1000, NOW()
+FROM users
+WHERE username IN ('egemen', 'osman', 'cagatay');

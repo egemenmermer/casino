@@ -19,9 +19,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private GameHistoryRepository gameHistoryRepository;
-
     @Override
     public ResponseEntity<UserDto> retrieveUser(Long id) {
         UserEntity user = userRepository.findById(id).orElseThrow(
@@ -31,21 +28,6 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.ok(userDto);
     }
 
-    @Override
-    public List<GameHistoryDto> getHistory(String username) {
 
-        return gameHistoryRepository
-                .findAll()
-                .stream()
-                .map(gameHistoryEntity -> new GameHistoryDto(
-                        gameHistoryEntity.getHistoryId(),
-                        gameHistoryEntity.getGameName(),
-                        gameHistoryEntity.getPlayDate(),
-                        gameHistoryEntity.getBetAmount(),
-                        gameHistoryEntity.getOldBalance(),
-                        gameHistoryEntity.getNewBalance()
-                ))
-                .collect(Collectors.toList());
-    }
 
 }

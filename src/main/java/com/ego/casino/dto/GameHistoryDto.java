@@ -24,7 +24,7 @@ public class GameHistoryDto {
     private GameEntity game;
     private AccountEntity account;
 
-    public GameHistoryDto(Long id, Timestamp playDate, BigDecimal betAmount, BigDecimal oldBalance, BigDecimal newBalance, String status, GameEntity game, AccountEntity account) {
+    public GameHistoryDto(Long id, Timestamp playDate, BigDecimal betAmount, BigDecimal oldBalance, BigDecimal newBalance, String status, GameEntity game) {
         this.id = id;
         this.playDate = playDate;
         this.betAmount = betAmount;
@@ -32,7 +32,6 @@ public class GameHistoryDto {
         this.newBalance = newBalance;
         this.status = status;
         this.game = game;
-        this.account = account;
     }
 
     public GameHistoryDto() {

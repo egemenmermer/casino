@@ -20,7 +20,6 @@ public class GameListingServiceImpl implements GameListingService {
 
     @Override
     public List<GameDto> getAllGames() {
-        List<GameEntity> gameEntities = gameRepository.findAll();
         return gameRepository
                 .findAll()
                 .stream()

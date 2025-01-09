@@ -6,5 +6,5 @@ CREATE TABLE rewards (
                          id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                          user_id BIGINT,
                          points INT DEFAULT 0,
-                         FOREIGN KEY (user_id) REFERECES users(id)
+                         FOREIGN KEY (user_id) REFERENCES users(id)
 );

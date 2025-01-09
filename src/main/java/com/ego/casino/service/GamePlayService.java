@@ -5,5 +5,5 @@ import com.ego.casino.dto.PlayGameResponseDto;
 
 public interface GamePlayService {
 
-    public PlayGameResponseDto playGame(Long gameId, PlayGameRequestDto playGameRequestDto);
+    public PlayGameResponseDto playGame(Long id,Long gameId, PlayGameRequestDto playGameRequestDto);
 }

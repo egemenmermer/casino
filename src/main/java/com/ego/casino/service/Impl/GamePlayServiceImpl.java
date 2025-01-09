@@ -4,7 +4,6 @@ import com.ego.casino.dto.PlayGameRequestDto;
 import com.ego.casino.dto.PlayGameResponseDto;
 import com.ego.casino.entity.AccountEntity;
 import com.ego.casino.entity.GameEntity;
-import com.ego.casino.entity.UserEntity;
 import com.ego.casino.exception.ResourceNotFoundException;
 import com.ego.casino.service.GamePlayService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +27,12 @@ public class GamePlayServiceImpl implements GamePlayService {
     private GameListingServiceImpl gameListingService;
 
     @Override
-    public PlayGameResponseDto playGame(Long id, PlayGameRequestDto playGameRequestDto) {
+    public PlayGameResponseDto playGame(Long id, Long gameId , PlayGameRequestDto playGameRequestDto) {
 
-        AccountEntity accountEntity = accountService.searchAccount(playGameRequestDto.getId()).orElseThrow(
+        AccountEntity accountEntity = accountService.searchAccount(id).orElseThrow(
                 () -> new ResourceNotFoundException("Account not found!")
         );
-        GameEntity gameEntity = gameListingService.searchGame(playGameRequestDto.getId()).orElseThrow(
+        GameEntity gameEntity = gameListingService.searchGame(gameId).orElseThrow(
                 () -> new ResourceNotFoundException("Game not found!")
         );
 
