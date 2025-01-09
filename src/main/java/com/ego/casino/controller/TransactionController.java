@@ -17,7 +17,7 @@ public class TransactionController {
     @PutMapping("/{username}/balance/topup")
     public ResponseEntity<TransactionDto> deposit(@PathVariable String username, @RequestBody TransactionDto transactionDto) {
 
-        TransactionDto topUpBalance = transactionService.topUpBalance(username, transactionDto.getDepositAmount().doubleValue()).getBody();
+        TransactionDto topUpBalance = transactionService.deposit(username, transactionDto.getDepositAmount().doubleValue()).getBody();
         return ResponseEntity.ok(topUpBalance);
 
     }

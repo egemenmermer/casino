@@ -3,6 +3,7 @@ package com.ego.casino.entity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "transaction")
@@ -19,13 +20,25 @@ public class TransactionEntity {
     @Column(nullable = false, name = "kind")
     private String kind;
 
-    public TransactionEntity(Long id, BigDecimal amount, String kind) {
+    @Column(nullable = false, name = "created_at")
+    private Timestamp createdAt;
+
+    public TransactionEntity(Long id, BigDecimal amount, String kind, Timestamp createdAt) {
         this.id = id;
         this.amount = amount;
         this.kind = kind;
+        this.createdAt = new Timestamp(System.currentTimeMillis());
     }
 
     public TransactionEntity() {
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
     }
 
     public Long getId() {
