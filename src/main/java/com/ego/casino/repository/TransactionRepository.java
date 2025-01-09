@@ -1,7 +1,9 @@
 package com.ego.casino.repository;
 
+import com.ego.casino.entity.TransactionEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TransactionRepository {
+public interface TransactionRepository extends JpaRepository<TransactionEntity, Long> {
 }

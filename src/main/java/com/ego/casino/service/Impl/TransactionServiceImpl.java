@@ -4,6 +4,7 @@ import com.ego.casino.dto.AccountDto;
 import com.ego.casino.dto.TransactionDto;
 import com.ego.casino.entity.AccountEntity;
 import com.ego.casino.entity.UserEntity;
+import com.ego.casino.exception.ResourceNotFoundException;
 import com.ego.casino.repository.AccountRepository;
 import com.ego.casino.repository.UserRepository;
 import com.ego.casino.service.TransactionService;
@@ -18,27 +19,39 @@ import java.math.BigDecimal;
 public class TransactionServiceImpl implements TransactionService {
 
     @Autowired
-    AccountRepository accountRepository;
+    private AccountRepository accountRepository;
 
     @Override
-    public ResponseEntity<TransactionDto> deposit(Long id, Double amount) {
+    public ResponseEntity<AccountDto> deposit(Long id, Double amount) {
         AccountEntity account = accountRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Account not found!")
+                () -> new ResourceNotFoundException("Account not found!")
         );
-
         if(amount > 0){
             AccountDto accountDto = new AccountDto();
+            accountDto.setId(id);
             accountDto.setBalance(account.getBalance().add(BigDecimal.valueOf(amount)));
             account.setBalance(account.getBalance().add(BigDecimal.valueOf(amount)));
             accountRepository.save(account);
-            return ResponseEntity.ok(transactionDto);
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new TransactionDto("Topup amount can't be negative!"));
+            return ResponseEntity.ok(accountDto);
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(null);
         }
     }
 
     @Override
-    public ResponseEntity<TransactionDto> withdraw(Long id, Double amount) {
-        return null;
+    public ResponseEntity<AccountDto> withdraw(Long id, Double amount) {
+        AccountEntity account = accountRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Account not found!")
+        );
+        if(amount > 0){
+            AccountDto accountDto = new AccountDto();
+            accountDto.setId(id);
+            accountDto.setBalance(account.getBalance().subtract(BigDecimal.valueOf(amount)));
+            account.setBalance(account.getBalance().subtract(BigDecimal.valueOf(amount)));
+            accountRepository.save(account);
+            return ResponseEntity.ok(accountDto);
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(null);
+        }
     }
 }

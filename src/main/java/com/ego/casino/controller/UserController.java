@@ -33,4 +33,10 @@ public class UserController {
     }
 
 
+    @GetMapping("/me")
+    public ResponseEntity<UserDto> retrieveUser(@RequestHeader("X-USER-ID") Long userId) {
+        UserDto userDto = userService.retrieveUser(userId).getBody();
+        return ResponseEntity.ok(userDto);
+    }
+
 }

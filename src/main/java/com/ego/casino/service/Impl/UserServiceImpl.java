@@ -33,6 +33,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ResponseEntity<UserDto> retrieveUser(Long id) {
+        UserEntity user = userRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("User not found!")
+        );
+        UserDto userDto = new UserDto(user.getId(),user.getUsername());
+        return ResponseEntity.ok(userDto);
+    }
+
+    @Override
     public List<GameHistoryDto> getHistory(String username) {
 
         return gameHistoryRepository

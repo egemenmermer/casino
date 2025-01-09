@@ -39,18 +39,7 @@ public class GameServiceImpl implements GameService {
         this.gameRepository = gameRepository;
     }
 
-    @Override
-    public List<GameDto> getAllGames() {
-        List<GameEntity> gameEntities = gameRepository.findAll();
-        return gameRepository
-                .findAll()
-                .stream()
-                .map(gameEntity -> new GameDto(
-                        gameEntity.getGameName(),
-                        gameEntity.getWinChance(),
-                        gameEntity.getMinAmount()))
-                .collect(Collectors.toList());
-    }
+
 
     @Override
     public PlayGameResponseDto playGame(String gameName, PlayGameRequestDto playGameRequestDto) {

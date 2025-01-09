@@ -20,11 +20,7 @@ public class GameController {
     @Autowired
     private GameService gameService;
 
-    @GetMapping
-    public ResponseEntity<List<GameDto>> getAllGames(){
-        List<GameDto> games = gameService.getAllGames();
-        return new ResponseEntity<>(games, HttpStatus.OK);
-    }
+
 
     @PostMapping("/play/{gameName}")
     public ResponseEntity<PlayGameResponseDto> playGame(@PathVariable String gameName, @RequestBody PlayGameRequestDto playGameRequestDto){
