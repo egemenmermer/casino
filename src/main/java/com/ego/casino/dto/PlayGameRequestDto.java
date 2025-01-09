@@ -7,9 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-
-@Builder
-@Log4j2
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PlayGameRequestDto {
 

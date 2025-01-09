@@ -1,6 +1,7 @@
 package com.ego.casino.service.Impl;
 
 import com.ego.casino.dto.GameDto;
+import com.ego.casino.entity.AccountEntity;
 import com.ego.casino.entity.GameEntity;
 import com.ego.casino.repository.GameRepository;
 import com.ego.casino.service.GameListingService;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,5 +30,9 @@ public class GameListingServiceImpl implements GameListingService {
                         gameEntity.getWinChance(),
                         gameEntity.getMinAmount()))
                 .collect(Collectors.toList());
+    }
+
+    public Optional<GameEntity> searchGame(Long id) {
+        return gameRepository.findById(id);
     }
 }

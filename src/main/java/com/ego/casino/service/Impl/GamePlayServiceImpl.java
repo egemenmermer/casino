@@ -6,8 +6,6 @@ import com.ego.casino.entity.AccountEntity;
 import com.ego.casino.entity.GameEntity;
 import com.ego.casino.entity.UserEntity;
 import com.ego.casino.exception.ResourceNotFoundException;
-import com.ego.casino.service.AccountService;
-import com.ego.casino.service.GameHistoryService;
 import com.ego.casino.service.GamePlayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,20 +24,24 @@ public class GamePlayServiceImpl implements GamePlayService {
     @Autowired
     GameHistoryServiceImpl gameHistoryService;
 
+    @Autowired
+    private GameListingServiceImpl gameListingService;
+
     @Override
     public PlayGameResponseDto playGame(Long id, PlayGameRequestDto playGameRequestDto) {
 
         AccountEntity accountEntity = accountService.searchAccount(playGameRequestDto.getId()).orElseThrow(
                 () -> new ResourceNotFoundException("Account not found!")
         );
-        GameEntity gameEntity = new GameEntity();
+        GameEntity gameEntity = gameListingService.searchGame(playGameRequestDto.getId()).orElseThrow(
+                () -> new ResourceNotFoundException("Game not found!")
+        );
 
         boolean result = isWinner(gameEntity.getWinChance().doubleValue());
 
-
         BigDecimal oldBalance = accountEntity.getBalance();
         BigDecimal newBalance = transactionService.calculateNewbalance(accountEntity.getBalance(), playGameRequestDto.getBetAmount(), gameEntity.getWinChance().doubleValue(), result);
-        gameHistoryService.saveGameHistory(accountEntity, gameEntity, accountEntity.getBalance(), newBalance, playGameRequestDto, gameEntity, gameEntity.getName());
+        gameHistoryService.saveGameHistory(accountEntity, gameEntity, accountEntity.getBalance(), newBalance, playGameRequestDto);
         accountService.updateUserBalance(accountEntity, newBalance);
 
         if(result) {
@@ -48,7 +50,6 @@ public class GamePlayServiceImpl implements GamePlayService {
             return new PlayGameResponseDto("You lost!", oldBalance, newBalance);
         }
     }
-
 
     public boolean isWinner(double winRate){
         Double randomValue = Math.random();
