@@ -48,7 +48,7 @@ public class GameHistoryServiceImpl implements GameHistoryService {
                 () -> new ResourceNotFoundException("Account not found!")
         );
         return gameHistoryRepository
-                .findById(accountEntity.getId())
+                .findByAccountId(accountEntity.getId())
                 .stream()
                 .map(gameHistoryEntity -> new GameHistoryDto(
                         gameHistoryEntity.getId(),
@@ -60,7 +60,5 @@ public class GameHistoryServiceImpl implements GameHistoryService {
                         gameHistoryEntity.getGame()
                 ))
                 .collect(Collectors.toList());
-
-
     }
 }

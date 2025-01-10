@@ -21,6 +21,7 @@ public class GameHistoryDto {
     private BigDecimal oldBalance;
     private BigDecimal newBalance;
     private String status;
+    private String gameName;
     private GameEntity game;
     private AccountEntity account;
 
@@ -31,10 +32,18 @@ public class GameHistoryDto {
         this.oldBalance = oldBalance;
         this.newBalance = newBalance;
         this.status = status;
-        this.game = game;
+        this.gameName = game.getName();
     }
 
     public GameHistoryDto() {
+    }
+
+    public String getGameName() {
+        return gameName;
+    }
+
+    public void setGameName(String gameName) {
+        this.gameName = gameName;
     }
 
     public Long getId() {
