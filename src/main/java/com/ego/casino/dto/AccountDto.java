@@ -1,9 +1,11 @@
 package com.ego.casino.dto;
 
 import com.ego.casino.entity.UserEntity;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.math.BigDecimal;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AccountDto {
     private Long id;
     private BigDecimal balance;
