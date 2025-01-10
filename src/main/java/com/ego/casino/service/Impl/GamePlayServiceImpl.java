@@ -40,7 +40,8 @@ public class GamePlayServiceImpl implements GamePlayService {
 
         BigDecimal oldBalance = accountEntity.getBalance();
         BigDecimal newBalance = transactionService.calculateNewbalance(accountEntity.getBalance(), playGameRequestDto.getBetAmount(), gameEntity.getWinChance().doubleValue(), result);
-        gameHistoryService.saveGameHistory(accountEntity, gameEntity, accountEntity.getBalance(), newBalance, playGameRequestDto);
+        String status = result ? "WIN" : "LOSE";
+        gameHistoryService.saveGameHistory(accountEntity, gameEntity, accountEntity.getBalance(), newBalance, playGameRequestDto, status);
         accountService.updateUserBalance(accountEntity, newBalance);
 
         if(result) {

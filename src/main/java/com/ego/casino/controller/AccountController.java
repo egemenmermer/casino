@@ -17,14 +17,14 @@ public class AccountController {
     private  TransactionService transactionService;
 
 
-    @PutMapping("/{account_id}/deposit")
+    @PostMapping("/{account_id}/deposit")
     public ResponseEntity<TransactionDto> deposit(@RequestHeader("X-USER-ID") Long id, @PathVariable Long account_id, @RequestBody TransactionDto transactionDto) {
 
         TransactionDto topUpBalance = transactionService.transaction(id, BigDecimal.valueOf(transactionDto.getAmount().doubleValue()), TransactionType.DEPOSIT).getBody();
         return ResponseEntity.ok(topUpBalance);
     }
 
-    @PutMapping("/{account_id}/withdraw")
+    @PostMapping("/{account_id}/withdraw")
     public ResponseEntity<TransactionDto> withdraw(@RequestHeader("X-USER-ID") Long id, @PathVariable Long account_id, @RequestBody TransactionDto transactionDto) {
 
         TransactionDto topUpBalance = transactionService.transaction(id, BigDecimal.valueOf(transactionDto.getAmount().doubleValue()), TransactionType.WITHDRAW).getBody();

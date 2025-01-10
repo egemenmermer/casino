@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,7 +29,7 @@ public class GameHistoryServiceImpl implements GameHistoryService {
     AccountServiceImpl accountService;
 
     @Override
-    public void saveGameHistory(AccountEntity accountEntity, GameEntity gameEntity, BigDecimal oldBalance, BigDecimal newBalance, PlayGameRequestDto playGameRequestDto){
+    public void saveGameHistory(AccountEntity accountEntity, GameEntity gameEntity, BigDecimal oldBalance, BigDecimal newBalance, PlayGameRequestDto playGameRequestDto, String status) {
         GameHistoryEntity gameHistoryEntity = new GameHistoryEntity();
         gameHistoryEntity.setGame(gameEntity);
         gameHistoryEntity.setAccount(accountEntity);
@@ -36,6 +37,7 @@ public class GameHistoryServiceImpl implements GameHistoryService {
         gameHistoryEntity.setNewBalance(newBalance);
         gameHistoryEntity.setBetAmount(BigDecimal.valueOf(playGameRequestDto.getBetAmount()));
         gameHistoryEntity.setPlayDate(Timestamp.valueOf(LocalDateTime.now()));
+        gameHistoryEntity.setStatus(status);
         gameHistoryRepository.save(gameHistoryEntity);
     }
 
@@ -45,9 +47,8 @@ public class GameHistoryServiceImpl implements GameHistoryService {
         AccountEntity accountEntity = accountService.searchAccount(id).orElseThrow(
                 () -> new ResourceNotFoundException("Account not found!")
         );
-
         return gameHistoryRepository
-                .findById(id)
+                .findById(accountEntity.getId())
                 .stream()
                 .map(gameHistoryEntity -> new GameHistoryDto(
                         gameHistoryEntity.getId(),
@@ -59,5 +60,7 @@ public class GameHistoryServiceImpl implements GameHistoryService {
                         gameHistoryEntity.getGame()
                 ))
                 .collect(Collectors.toList());
+
+
     }
 }

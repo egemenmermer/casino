@@ -36,7 +36,7 @@ public class TransactionServiceImpl implements TransactionService {
         }
         accountService.saveAccount(account);
 
-        return ResponseEntity.ok(new TransactionDto(account.getId(),amount, transactionType, account.getBalance(), LocalDateTime.now()));
+        return ResponseEntity.ok(new TransactionDto(account.getId(),amount, transactionType,account.getBalance()));
     }
 
     public double calculateWinAmount(double betAmount, double winRate){

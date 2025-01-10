@@ -10,6 +10,6 @@ import java.util.List;
 
 public interface GameHistoryService {
 
-    public void saveGameHistory(AccountEntity accountEntity, GameEntity gameEntity, BigDecimal oldBalance, BigDecimal newBalance, PlayGameRequestDto playGameRequestDto);
+    public void saveGameHistory(AccountEntity accountEntity, GameEntity gameEntity, BigDecimal oldBalance, BigDecimal newBalance, PlayGameRequestDto playGameRequestDto, String status);
     public List<GameHistoryDto> getHistory(Long accountId);
 }

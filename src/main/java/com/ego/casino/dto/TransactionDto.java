@@ -18,14 +18,23 @@ public class TransactionDto {
     private BigDecimal amount;
     private TransactionType transactionType;
     private LocalDateTime createdAt;
+    private BigDecimal finalBalance;
     private AccountEntity account;
 
-    public TransactionDto(Long id, BigDecimal amount, TransactionType transactionType, BigDecimal balance , LocalDateTime createdAt) {
+    public TransactionDto(Long id, BigDecimal amount, TransactionType transactionType, BigDecimal finalBalance) {
         this.id = id;
         this.amount = amount;
-        this.account.setBalance(balance);
         this.transactionType = transactionType;
-        this.createdAt = createdAt;
+        this.finalBalance = finalBalance;
+    }
+
+
+    public BigDecimal getFinalBalance() {
+        return finalBalance;
+    }
+
+    public void setFinalBalance(BigDecimal finalBalance) {
+        this.finalBalance = finalBalance;
     }
 
     public AccountEntity getAccount() {
