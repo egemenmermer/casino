@@ -35,6 +35,10 @@ public class GameHistoryDto {
         this.gameName = game.getName();
     }
 
+    public GameHistoryDto(Long s, Timestamp a, BigDecimal b, BigDecimal c, BigDecimal d, String t, String y, GameEntity j, AccountEntity n){
+
+    }
+
     public GameHistoryDto() {
     }
 
