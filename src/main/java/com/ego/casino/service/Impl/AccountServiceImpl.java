@@ -1,9 +1,9 @@
 package com.ego.casino.service.Impl;
 
 import com.ego.casino.dto.AccountDto;
-import com.ego.casino.dto.UserDto;
+import com.ego.casino.dto.TransactionDto;
 import com.ego.casino.entity.AccountEntity;
-import com.ego.casino.entity.UserEntity;
+import com.ego.casino.enums.TransactionType;
 import com.ego.casino.repository.AccountRepository;
 import com.ego.casino.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +19,9 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private TransactionServiceImpl transactionService;
+
     @Override
     public ResponseEntity<AccountDto> getBalance(Long id) {
         AccountEntity account = accountRepository.findById(id).orElseThrow(
@@ -30,13 +33,23 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
-    public Optional<AccountEntity> searchAccount(Long id) {
+    public Optional<AccountEntity> findAccount(Long id) {
         return accountRepository.findById(id);
     }
 
-    public void saveAccount(AccountEntity account) {
+    public void updateAccount(AccountEntity account) {
         accountRepository.save(account);
     }
+
+
+
+/*
+    public ResponseEntity<TransactionDto> createTransaction(Long id, BigDecimal amount, TransactionType transactionType) {
+        transactionService.transaction(id, amount, transactionType);
+       return ResponseEntity.ok(new TransactionDto(account.getId(),amount, transactionType,account.getBalance()));
+    }
+
+ */
 
     /*
     @Override

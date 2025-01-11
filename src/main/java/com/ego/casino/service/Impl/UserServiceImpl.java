@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public ResponseEntity<UserDto> retrieveUser(Long id) {
+    public ResponseEntity<UserDto> getUser(Long id) {
         UserEntity user = userRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("User not found!")
         );

@@ -20,8 +20,9 @@ public class GameHistoryController {
     GameHistoryServiceImpl gameHistoryService;
 
 
-    @GetMapping("/{account_id}")
-    public ResponseEntity<List<GameHistoryDto>> getHistory(@PathVariable Long account_id, @RequestHeader("X-USER-ID") Long userId) {
+    @GetMapping
+    @ResponseBody
+    public ResponseEntity<List<GameHistoryDto>> getHistory(@RequestParam Long account_id, @RequestHeader("X-USER-ID") Long userId) {
         List<GameHistoryDto> games = gameHistoryService.getHistory(account_id);
         return new ResponseEntity<>(games, HttpStatus.OK);
     }

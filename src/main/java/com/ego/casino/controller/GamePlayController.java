@@ -4,6 +4,7 @@ import com.ego.casino.dto.PlayGameRequestDto;
 import com.ego.casino.dto.PlayGameResponseDto;
 import com.ego.casino.service.GamePlayService;
 import com.ego.casino.service.GameService;
+import com.ego.casino.service.Impl.GamePlayServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class GamePlayController {
 
     @Autowired
-    private GamePlayService gamePlayService;
+    private GamePlayServiceImpl gamePlayService;
 
     @PostMapping("/play/{gameId}")
     public ResponseEntity<PlayGameResponseDto> playGame(@RequestHeader("X-USER-ID")Long id,@PathVariable Long gameId, @RequestBody PlayGameRequestDto playGameRequestDto){

@@ -1,11 +1,8 @@
 package com.ego.casino.service.Impl;
 
-import com.ego.casino.dto.PlayGameRequestDto;
 import com.ego.casino.dto.TransactionDto;
 import com.ego.casino.dto.TransactionHistoryDto;
 import com.ego.casino.entity.AccountEntity;
-import com.ego.casino.entity.GameEntity;
-import com.ego.casino.entity.GameHistoryEntity;
 import com.ego.casino.entity.TransactionHistoryEntity;
 import com.ego.casino.enums.TransactionType;
 import com.ego.casino.exception.ResourceNotFoundException;
@@ -32,7 +29,7 @@ public class TransactionServiceImpl implements TransactionService {
     private TransactionHistoryRepository transactionHistoryRepository;
 
     @Override
-    public void saveTransactionHistory(AccountEntity account, BigDecimal amount, BigDecimal finalBalance, TransactionType transactionType, LocalDateTime created_at) {
+    public void createTransaction(AccountEntity account, BigDecimal amount, BigDecimal finalBalance, TransactionType transactionType, LocalDateTime created_at) {
         TransactionHistoryEntity transactionHistoryEntity = new TransactionHistoryEntity();
         transactionHistoryEntity.setAccount(account);
         transactionHistoryEntity.setAmount(amount);
@@ -44,7 +41,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public ResponseEntity<TransactionDto> transaction(Long id, BigDecimal amount, TransactionType transactionType) {
-        AccountEntity account = accountService.searchAccount(id).orElseThrow(
+        AccountEntity account = accountService.findAccount(id).orElseThrow(
                 () -> new ResourceNotFoundException("Account not found!")
         );
 
@@ -57,16 +54,15 @@ public class TransactionServiceImpl implements TransactionService {
         }else if(transactionType == TransactionType.WITHDRAW){
             account.setBalance(account.getBalance().subtract(amount));
         }
-        accountService.saveAccount(account);
-        saveTransactionHistory(account, amount, account.getBalance(), transactionType, LocalDateTime.now());
+        accountService.updateAccount(account);
+        createTransaction(account, amount, account.getBalance(), transactionType, LocalDateTime.now());
         return ResponseEntity.ok(new TransactionDto(account.getId(),amount, transactionType,account.getBalance()));
     }
 
 
-
     @Override
     public List<TransactionHistoryDto> getHistory(Long id) {
-        AccountEntity accountEntity = accountService.searchAccount(id).orElseThrow(
+        AccountEntity accountEntity = accountService.findAccount(id).orElseThrow(
                 () -> new ResourceNotFoundException("Account not found!")
         );
         return transactionHistoryRepository

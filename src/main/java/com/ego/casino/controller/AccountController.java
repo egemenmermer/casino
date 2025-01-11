@@ -1,12 +1,11 @@
 package com.ego.casino.controller;
 
-import com.ego.casino.dto.AccountDto;
-import com.ego.casino.dto.TransactionDto;
-import com.ego.casino.dto.TransactionHistoryDto;
+import com.ego.casino.dto.*;
 import com.ego.casino.entity.AccountEntity;
 import com.ego.casino.enums.TransactionType;
 import com.ego.casino.service.AccountService;
 import com.ego.casino.service.Impl.AccountServiceImpl;
+import com.ego.casino.service.Impl.TransactionServiceImpl;
 import com.ego.casino.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,24 +20,24 @@ import java.util.Optional;
 public class AccountController {
 
     @Autowired
-    private  TransactionService transactionService;
+    private TransactionServiceImpl transactionService;
 
     @Autowired
     private AccountServiceImpl accountService;
 
 
     @PostMapping("/{account_id}/deposit")
-    public ResponseEntity<TransactionDto> deposit(@RequestHeader("X-USER-ID") Long id, @PathVariable Long account_id, @RequestBody TransactionDto transactionDto) {
+    public ResponseEntity<DepositResponseDto> deposit(@RequestHeader("X-USER-ID") Long id, @PathVariable Long account_id, @RequestBody DepositRequestDto depositRequestDto) {
 
-        TransactionDto topUpBalance = transactionService.transaction(id, BigDecimal.valueOf(transactionDto.getAmount().doubleValue()), TransactionType.DEPOSIT).getBody();
-        return ResponseEntity.ok(topUpBalance);
+        DepositResponseDto depositResponseDto = accountService.createTransaction(id, BigDecimal.valueOf(depositRequestDto.getAmount().doubleValue()), TransactionType.DEPOSIT).getBody();
+        return ResponseEntity.ok(depositResponseDto);
     }
 
     @PostMapping("/{account_id}/withdraw")
-    public ResponseEntity<TransactionDto> withdraw(@RequestHeader("X-USER-ID") Long id, @PathVariable Long account_id, @RequestBody TransactionDto transactionDto) {
+    public ResponseEntity<WithdrawResponseDto> withdraw(@RequestHeader("X-USER-ID") Long id, @PathVariable Long account_id, @RequestBody WithdrawRequestDto withdrawRequestDto) {
 
-        TransactionDto topUpBalance = transactionService.transaction(id, BigDecimal.valueOf(transactionDto.getAmount().doubleValue()), TransactionType.WITHDRAW).getBody();
-        return ResponseEntity.ok(topUpBalance);
+        WithdrawResponseDto withdrawResponseDto = accountService.createTransaction(id, BigDecimal.valueOf(withdrawRequestDto.getAmount().doubleValue()), TransactionType.WITHDRAW).getBody();
+        return ResponseEntity.ok(withdrawResponseDto);
     }
 
     @GetMapping("/{account_id}")

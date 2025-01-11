@@ -29,7 +29,7 @@ public class GamePlayServiceImpl implements GamePlayService {
     @Override
     public PlayGameResponseDto playGame(Long id, Long gameId , PlayGameRequestDto playGameRequestDto) {
 
-        AccountEntity accountEntity = accountService.searchAccount(id).orElseThrow(
+        AccountEntity accountEntity = accountService.findAccount(id).orElseThrow(
                 () -> new ResourceNotFoundException("Account not found!")
         );
         GameEntity gameEntity = gameListingService.searchGame(gameId).orElseThrow(
@@ -41,7 +41,7 @@ public class GamePlayServiceImpl implements GamePlayService {
         BigDecimal oldBalance = accountEntity.getBalance();
         BigDecimal newBalance = transactionService.calculateNewbalance(accountEntity.getBalance(), playGameRequestDto.getBetAmount(), gameEntity.getWinChance().doubleValue(), result);
         String status = result ? "WIN" : "LOSE";
-        gameHistoryService.saveGameHistory(accountEntity, gameEntity, accountEntity.getBalance(), newBalance, playGameRequestDto, status);
+        gameHistoryService.createGameHistory(accountEntity, gameEntity, accountEntity.getBalance(), newBalance, playGameRequestDto, status);
         accountService.updateUserBalance(accountEntity, newBalance);
 
         if(result) {

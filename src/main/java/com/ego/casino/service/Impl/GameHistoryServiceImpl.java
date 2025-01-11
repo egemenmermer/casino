@@ -5,7 +5,6 @@ import com.ego.casino.dto.PlayGameRequestDto;
 import com.ego.casino.entity.AccountEntity;
 import com.ego.casino.entity.GameEntity;
 import com.ego.casino.entity.GameHistoryEntity;
-import com.ego.casino.entity.UserEntity;
 import com.ego.casino.exception.ResourceNotFoundException;
 import com.ego.casino.repository.GameHistoryRepository;
 import com.ego.casino.service.GameHistoryService;
@@ -16,7 +15,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +27,7 @@ public class GameHistoryServiceImpl implements GameHistoryService {
     AccountServiceImpl accountService;
 
     @Override
-    public void saveGameHistory(AccountEntity accountEntity, GameEntity gameEntity, BigDecimal oldBalance, BigDecimal newBalance, PlayGameRequestDto playGameRequestDto, String status) {
+    public void createGameHistory(AccountEntity accountEntity, GameEntity gameEntity, BigDecimal oldBalance, BigDecimal newBalance, PlayGameRequestDto playGameRequestDto, String status) {
         GameHistoryEntity gameHistoryEntity = new GameHistoryEntity();
         gameHistoryEntity.setGame(gameEntity);
         gameHistoryEntity.setAccount(accountEntity);
@@ -44,7 +42,7 @@ public class GameHistoryServiceImpl implements GameHistoryService {
     @Override
     public List<GameHistoryDto> getHistory(Long id) {
 
-        AccountEntity accountEntity = accountService.searchAccount(id).orElseThrow(
+        AccountEntity accountEntity = accountService.findAccount(id).orElseThrow(
                 () -> new ResourceNotFoundException("Account not found!")
         );
         return gameHistoryRepository

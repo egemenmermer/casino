@@ -11,15 +11,11 @@ import lombok.extern.log4j.Log4j2;
 public class PlayGameRequestDto {
 
     private Long id;
-    private String gameName;
     private double betAmount;
-    private String message;
 
-    public PlayGameRequestDto(Long id, String gameName, double betAmount, String message) {
+    public PlayGameRequestDto(Long id, double betAmount) {
         this.id = id;
-        this.gameName = gameName;
         this.betAmount = betAmount;
-        this.message = message;
     }
 
     public PlayGameRequestDto() {
@@ -34,13 +30,6 @@ public class PlayGameRequestDto {
         this.id = id;
     }
 
-    public String getGameName() {
-        return gameName;
-    }
-
-    public void setGameName(String gameName) {
-        this.gameName = gameName;
-    }
 
     public double getBetAmount() {
         return betAmount;
@@ -50,13 +39,6 @@ public class PlayGameRequestDto {
         this.betAmount = betAmount;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
 
 
 }
