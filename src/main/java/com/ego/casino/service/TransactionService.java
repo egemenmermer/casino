@@ -12,7 +12,5 @@ import java.util.List;
 public interface TransactionService {
 
     public void createTransaction(AccountEntity account, BigDecimal amount, BigDecimal finalBalance, TransactionType transactionType , LocalDateTime created_at);
-    public ResponseEntity<TransactionDto> transaction(Long id, BigDecimal amount, TransactionType transactionType);
     public List<TransactionHistoryDto> getHistory(Long id);
-
 }

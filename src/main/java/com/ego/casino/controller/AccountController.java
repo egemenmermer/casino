@@ -29,14 +29,14 @@ public class AccountController {
     @PostMapping("/{account_id}/deposit")
     public ResponseEntity<DepositResponseDto> deposit(@RequestHeader("X-USER-ID") Long id, @PathVariable Long account_id, @RequestBody DepositRequestDto depositRequestDto) {
 
-        DepositResponseDto depositResponseDto = accountService.createTransaction(id, BigDecimal.valueOf(depositRequestDto.getAmount().doubleValue()), TransactionType.DEPOSIT).getBody();
+        DepositResponseDto depositResponseDto = accountService.deposit(id, BigDecimal.valueOf(depositRequestDto.getAmount().doubleValue()), TransactionType.DEPOSIT).getBody();
         return ResponseEntity.ok(depositResponseDto);
     }
 
     @PostMapping("/{account_id}/withdraw")
     public ResponseEntity<WithdrawResponseDto> withdraw(@RequestHeader("X-USER-ID") Long id, @PathVariable Long account_id, @RequestBody WithdrawRequestDto withdrawRequestDto) {
 
-        WithdrawResponseDto withdrawResponseDto = accountService.createTransaction(id, BigDecimal.valueOf(withdrawRequestDto.getAmount().doubleValue()), TransactionType.WITHDRAW).getBody();
+        WithdrawResponseDto withdrawResponseDto = accountService.withdraw(id, BigDecimal.valueOf(withdrawRequestDto.getAmount().doubleValue()), TransactionType.WITHDRAW).getBody();
         return ResponseEntity.ok(withdrawResponseDto);
     }
 

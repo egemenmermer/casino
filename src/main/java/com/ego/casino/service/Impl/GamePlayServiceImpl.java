@@ -39,7 +39,7 @@ public class GamePlayServiceImpl implements GamePlayService {
         boolean result = isWinner(gameEntity.getWinChance().doubleValue());
 
         BigDecimal oldBalance = accountEntity.getBalance();
-        BigDecimal newBalance = transactionService.calculateNewbalance(accountEntity.getBalance(), playGameRequestDto.getBetAmount(), gameEntity.getWinChance().doubleValue(), result);
+        BigDecimal newBalance = calculateNewbalance(accountEntity.getBalance(), playGameRequestDto.getBetAmount(), gameEntity.getWinChance().doubleValue(), result);
         String status = result ? "WIN" : "LOSE";
         gameHistoryService.createGameHistory(accountEntity, gameEntity, accountEntity.getBalance(), newBalance, playGameRequestDto, status);
         accountService.updateUserBalance(accountEntity, newBalance);
@@ -55,5 +55,18 @@ public class GamePlayServiceImpl implements GamePlayService {
         Double randomValue = Math.random();
         return randomValue < winRate;
 
+    }
+
+    public double calculateWinAmount(double betAmount, double winRate){
+        return betAmount * (1 / winRate);
+    }
+
+    public BigDecimal calculateNewbalance(BigDecimal currentBalance, double betAmount, double winRate, boolean isWinner){
+        if(isWinner){
+            double winAmount = calculateWinAmount(betAmount, winRate);
+            return currentBalance.add(BigDecimal.valueOf(winAmount));
+        }else{
+            return currentBalance.subtract(BigDecimal.valueOf(betAmount));
+        }
     }
 }
