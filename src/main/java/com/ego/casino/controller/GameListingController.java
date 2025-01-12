@@ -3,6 +3,7 @@ package com.ego.casino.controller;
 import com.ego.casino.dto.GameDto;
 import com.ego.casino.service.GameListingService;
 import com.ego.casino.service.Impl.GameListingServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ public class GameListingController {
     GameListingServiceImpl gameListingService;
 
     @GetMapping
+    @Operation(summary = "Get All Games")
     public ResponseEntity<List<GameDto>> getAllGames(){
         List<GameDto> games = gameListingService.getAllGames();
         return new ResponseEntity<>(games, HttpStatus.OK);

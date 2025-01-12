@@ -7,6 +7,7 @@ import com.ego.casino.service.AccountService;
 import com.ego.casino.service.Impl.AccountServiceImpl;
 import com.ego.casino.service.Impl.TransactionServiceImpl;
 import com.ego.casino.service.TransactionService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,27 +26,30 @@ public class AccountController {
     @Autowired
     private AccountServiceImpl accountService;
 
-
+    @Operation(summary = "Deposit", description = "Deposit by AccountID")
     @PostMapping("/{account_id}/deposit")
     public ResponseEntity<DepositResponseDto> deposit(@RequestHeader("X-USER-ID") Long id, @PathVariable Long account_id, @RequestBody DepositRequestDto depositRequestDto) {
 
-        DepositResponseDto depositResponseDto = accountService.deposit(id, BigDecimal.valueOf(depositRequestDto.getAmount().doubleValue()), TransactionType.DEPOSIT).getBody();
+        DepositResponseDto depositResponseDto = accountService.deposit(account_id, BigDecimal.valueOf(depositRequestDto.getAmount().doubleValue()), TransactionType.DEPOSIT).getBody();
         return ResponseEntity.ok(depositResponseDto);
     }
 
+    @Operation(summary = "Withdraw", description = "Withdraw by AccountID")
     @PostMapping("/{account_id}/withdraw")
     public ResponseEntity<WithdrawResponseDto> withdraw(@RequestHeader("X-USER-ID") Long id, @PathVariable Long account_id, @RequestBody WithdrawRequestDto withdrawRequestDto) {
 
-        WithdrawResponseDto withdrawResponseDto = accountService.withdraw(id, BigDecimal.valueOf(withdrawRequestDto.getAmount().doubleValue()), TransactionType.WITHDRAW).getBody();
+        WithdrawResponseDto withdrawResponseDto = accountService.withdraw(account_id, BigDecimal.valueOf(withdrawRequestDto.getAmount().doubleValue()), TransactionType.WITHDRAW).getBody();
         return ResponseEntity.ok(withdrawResponseDto);
     }
 
+    @Operation(summary = "Get Account")
     @GetMapping("/{account_id}")
     public ResponseEntity<AccountDto> getAccount(@RequestHeader("X-USER-ID") Long id, @PathVariable Long account_id) {
 
         return ResponseEntity.ok(accountService.getBalance(account_id).getBody());
     }
 
+    @Operation(summary = "Get Transaction History")
     @GetMapping("/{account_id}/transactions")
     public ResponseEntity<List<TransactionHistoryDto>> getTransactionHistory(@RequestHeader("X-USER-ID") Long id, @PathVariable Long account_id) {
 
