@@ -4,12 +4,15 @@ import com.ego.casino.dto.PlayGameRequestDto;
 import com.ego.casino.dto.PlayGameResponseDto;
 import com.ego.casino.entity.AccountEntity;
 import com.ego.casino.entity.GameEntity;
+import com.ego.casino.enums.TransactionType;
 import com.ego.casino.exception.ResourceNotFoundException;
 import com.ego.casino.service.GamePlayService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Service
 public class GamePlayServiceImpl implements GamePlayService {
@@ -26,6 +29,7 @@ public class GamePlayServiceImpl implements GamePlayService {
     @Autowired
     private GameListingServiceImpl gameListingService;
 
+    @Transactional
     @Override
     public PlayGameResponseDto playGame(Long id, Long gameId , PlayGameRequestDto playGameRequestDto) {
 
@@ -41,8 +45,10 @@ public class GamePlayServiceImpl implements GamePlayService {
         BigDecimal oldBalance = accountEntity.getBalance();
         BigDecimal newBalance = calculateNewBalance(accountEntity.getBalance(), playGameRequestDto.getBetAmount(), gameEntity.getWinChance().doubleValue(), result);
         String status = result ? "WIN" : "LOSE";
+
         gameHistoryService.createGameHistory(accountEntity, gameEntity, accountEntity.getBalance(), newBalance, playGameRequestDto, status);
-        accountService.updateUserBalance(accountEntity, newBalance);
+        transactionService.createTransaction(accountEntity, newBalance, BigDecimal.valueOf(playGameRequestDto.getBetAmount()), TransactionType.BET, LocalDateTime.now());
+        accountService.updateBalance(accountEntity, newBalance);
 
         if(result) {
             return new PlayGameResponseDto("You win!", oldBalance, newBalance);

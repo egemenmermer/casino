@@ -70,7 +70,7 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>9.22.0</version> <!-- Versiyonu uygun şekilde belirtin -->
+            <version>9.22.0</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -90,13 +90,6 @@
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>10.20.1</version>
-                <configuration>
-                    <url>jdbc:postgresql://localhost:5432/casino</url>
-                    <user>postgres</user>
-                    <password>Asdqweres123321</password>
-                    <schemas>public</schemas>
-                    <locations>classpath:db/migration</locations>
-                </configuration>
             </plugin>
 
             <plugin>
