@@ -1,7 +1,6 @@
 package com.ego.casino.service.Impl;
 
 import com.ego.casino.dto.GameDto;
-import com.ego.casino.entity.AccountEntity;
 import com.ego.casino.entity.GameEntity;
 import com.ego.casino.repository.GameRepository;
 import com.ego.casino.service.GameListingService;
@@ -31,7 +30,7 @@ public class GameListingServiceImpl implements GameListingService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<GameEntity> searchGame(Long id) {
+    public Optional<GameEntity> findGame(Long id) {
         return gameRepository.findById(id);
     }
 }

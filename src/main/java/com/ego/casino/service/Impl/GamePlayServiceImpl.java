@@ -36,7 +36,7 @@ public class GamePlayServiceImpl implements GamePlayService {
         AccountEntity accountEntity = accountService.findAccount(id).orElseThrow(
                 () -> new ResourceNotFoundException("Account not found!")
         );
-        GameEntity gameEntity = gameListingService.searchGame(gameId).orElseThrow(
+        GameEntity gameEntity = gameListingService.findGame(gameId).orElseThrow(
                 () -> new ResourceNotFoundException("Game not found!")
         );
 
@@ -47,7 +47,7 @@ public class GamePlayServiceImpl implements GamePlayService {
         String status = result ? "WIN" : "LOSE";
 
         gameHistoryService.createGameHistory(accountEntity, gameEntity, accountEntity.getBalance(), newBalance, playGameRequestDto, status);
-        transactionService.createTransaction(accountEntity, newBalance, BigDecimal.valueOf(playGameRequestDto.getBetAmount()), TransactionType.BET, LocalDateTime.now());
+        transactionService.createTransaction(accountEntity, BigDecimal.valueOf(playGameRequestDto.getBetAmount()), newBalance, TransactionType.BET, LocalDateTime.now());
         accountService.updateBalance(accountEntity, newBalance);
 
         if(result) {
