@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.User;
 public interface AuthService {
 
     LoginResponseDto login(LoginRequestDto loginRequestDto);
-    void register(RegisterRequestDto registerRequestDto);
+    void register(RegisterRequestDto registerRequestDto, String token);
     public CustomUserDetails getUserDetailsByEmail(String email);
     public UserEntity getUserByEmail(String email);
 

@@ -4,10 +4,10 @@ import com.ego.casino.security.CustomUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.function.Function;
 
@@ -15,11 +15,8 @@ import java.util.function.Function;
 public class JwtTokenUtil {
 
     private static final long TOKEN_VALIDITY = 60 * 60 * 24 * 7;
-
-    private static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
-
-    @Value("${jwt.secret}")
-    private String secret;
+    private static final SignatureAlgorithm SIGNING_ALGORITHM = SignatureAlgorithm.HS512;
+    private final SecretKey secret = Keys.secretKeyFor(SIGNING_ALGORITHM);
 
     public String getEmailFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
@@ -52,7 +49,7 @@ public class JwtTokenUtil {
                 .setSubject(userDetails.getEmail())
                 .setIssuedAt(currentDate())
                 .setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY))
-                .signWith(SIGNATURE_ALGORITHM, secret)
+                .signWith(SIGNING_ALGORITHM, secret)
                 .compact();
     }
 

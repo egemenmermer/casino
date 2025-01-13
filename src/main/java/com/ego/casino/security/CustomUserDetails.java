@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
-@Service
+
 public class CustomUserDetails implements UserDetails {
 
     private String email;
@@ -20,6 +20,11 @@ public class CustomUserDetails implements UserDetails {
         this.email = email;
         this.password = password;
         this.authorities = authorities;
+    }
+
+    public CustomUserDetails(String email, String password) {
+        this.email = email;
+        this.password = password;
     }
 
     public String getEmail() {

@@ -45,17 +45,23 @@ public class AuthServiceImpl implements AuthService {
         return new LoginResponseDto(userEntity.getToken());
     }
 
+
     @Override
     @Transactional
-    public void register(RegisterRequestDto registerRequestDto) {
+    public void register(RegisterRequestDto registerRequestDto, String token) {
         String email = registerRequestDto.getEmail();
         String password = registerRequestDto.getPassword();
+
+        /*
         if (userService.findByEmail(email) != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exist");
         }
+         */
+
         UserEntity userEntity = new UserEntity();
         userEntity.setEmail(email);
         userEntity.setPassword(passwordEncoder.passwordEncoderBean().encode(password));
+        userEntity.setToken(token);
 
         userService.createUser(userEntity);
     }
@@ -71,6 +77,5 @@ public class AuthServiceImpl implements AuthService {
     public UserEntity getUserByEmail(String email) {
         return userService.findByEmail(email);
     }
-
 
 }

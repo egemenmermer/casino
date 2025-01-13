@@ -1,4 +1,0 @@
-ALTER TABLE users
-    ADD COLUMN password VARCHAR(20),
-    ADD COLUMN activated_at TIMESTAMP,
-    ADD COLUMN token VARCHAR;
