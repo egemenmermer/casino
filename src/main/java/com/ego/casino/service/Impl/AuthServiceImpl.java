@@ -7,6 +7,7 @@ import com.ego.casino.security.CustomUserDetails;
 import com.ego.casino.service.AuthService;
 import com.ego.casino.service.UserService;
 import com.ego.casino.util.JwtTokenUtil;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +46,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public void register(RegisterRequestDto registerRequestDto) {
         String email = registerRequestDto.getEmail();
         String password = registerRequestDto.getPassword();
@@ -59,10 +61,16 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public CustomUserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
+    public CustomUserDetails getUserDetailsByEmail(String email) throws UsernameNotFoundException {
         UserEntity user = userService.findByEmail(email);
 
         return new CustomUserDetails(user.getEmail(), user.getPassword(), new ArrayList<>());
     }
+
+    @Override
+    public UserEntity getUserByEmail(String email) {
+        return userService.findByEmail(email);
+    }
+
 
 }
