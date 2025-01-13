@@ -28,6 +28,17 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.ok(userDto);
     }
 
+    @Override
+    public UserEntity findByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(
+                () -> new RuntimeException("User not found!")
+        );
+    }
+
+    @Override
+    public void createUser(UserEntity userEntity) {
+        userRepository.save(userEntity);
+    }
 
 
 }
