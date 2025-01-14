@@ -37,14 +37,18 @@ public class LoginController {
     @Autowired
     private UserServiceImpl userServiceImpl;
 
-
+    /*
     @PostMapping("/authenticate")
     public ResponseEntity<LoginResponseDto> createAuthenticationToken(@RequestBody LoginRequestDto loginRequestDto)
             throws Exception {
         validateUser(loginRequestDto.getEmail(), loginRequestDto.getPassword());
         UserEntity userEntity = authServiceImpl.getUserByEmail(loginRequestDto.getEmail());
+
+
         return ResponseEntity.ok(new LoginResponseDto(userEntity.getToken()));
     }
+
+     */
 
     private void validateUser(String email, String password) throws Exception {
         try{

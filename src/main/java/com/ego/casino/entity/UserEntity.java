@@ -35,21 +35,11 @@ public class UserEntity {
     @Column(unique = true, nullable = false, name = "activated_at")
     private Timestamp activatedAt;
 
-    @Column(unique = true, nullable = false, name = "token")
-    private String token;
 
     public UserEntity(Long id, String username, String email) {
         this.id = id;
         this.username = username;
         this.email = email;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     public String getPassword() {

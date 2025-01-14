@@ -27,6 +27,6 @@ public class RegisterController {
         final String token = jwtTokenUtil.generateToken(new CustomUserDetails(registerRequestDto.getEmail(), registerRequestDto.getPassword()));
         authService.register(registerRequestDto, token);
         return ResponseEntity.ok(new RegisterResponseDto(token, "Success!"));
-
     }
+
 }
