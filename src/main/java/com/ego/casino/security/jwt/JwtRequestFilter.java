@@ -45,7 +45,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             return;
         }
 
-
         final String authorizationHeader = request.getHeader("Authorization");
 
         if(authorizationHeader == null && !authorizationHeader.startsWith("Bearer ")) {
@@ -61,10 +60,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             CustomUserDetails userDetails = authService.getUserDetailsByEmail(email);
-
-            if(jwtTokenUtil.validateToken(token, userDetails)) {
-
-            }
 
             if (jwtTokenUtil.validateToken(token, userDetails)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =

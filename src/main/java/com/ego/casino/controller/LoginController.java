@@ -9,6 +9,8 @@ import com.ego.casino.service.Impl.AuthServiceImpl;
 import com.ego.casino.service.Impl.TokenServiceImpl;
 import com.ego.casino.service.Impl.UserServiceImpl;
 import com.ego.casino.util.JwtTokenUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,35 +26,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(("/api/v1/login"))
 public class LoginController {
 
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
     @Autowired
     private AuthServiceImpl authService;
 
     @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+    private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
 
-    @Autowired
-    private AuthServiceImpl authServiceImpl;
-
-    @Autowired
-    private UserServiceImpl userServiceImpl;
-
-    @Autowired
-    private TokenServiceImpl tokenServiceImpl;
 
     @PostMapping
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
-        authServiceImpl.login(loginRequestDto);
 
         //validateUser(loginRequestDto.getEmail(), loginRequestDto.getPassword());
-
-        UserEntity userEntity = authServiceImpl.getUserByEmail(loginRequestDto.getEmail());
-        TokenEntity tokenEntity = tokenServiceImpl.findByUserId(userEntity.getId());
-
-        return ResponseEntity.ok(new LoginResponseDto());
+        //UserEntity userEntity = authServiceImpl.getUserByEmail(loginRequestDto.getEmail());
+        //TokenEntity tokenEntity = tokenServiceImpl.findByUserId(userEntity.getId());
+        System.out.println("Login endpoint hit");
+        logger.info("Login endpoint hit.");
+        return ResponseEntity.ok(authService.login(loginRequestDto));
     }
 
     /*
