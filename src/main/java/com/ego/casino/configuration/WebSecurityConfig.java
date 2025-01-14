@@ -41,7 +41,6 @@ public class WebSecurityConfig {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    // AuthenticationManager Bean for use in controllers or services
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
