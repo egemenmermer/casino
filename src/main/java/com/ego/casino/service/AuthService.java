@@ -1,5 +1,6 @@
 package com.ego.casino.service;
 
+import com.ego.casino.dto.ActivationRequestDto;
 import com.ego.casino.dto.LoginRequestDto;
 import com.ego.casino.dto.LoginResponseDto;
 import com.ego.casino.dto.RegisterRequestDto;
@@ -11,7 +12,7 @@ public interface AuthService {
 
     LoginResponseDto login(LoginRequestDto loginRequestDto);
     void register(RegisterRequestDto registerRequestDto, String token);
-    public CustomUserDetails getUserDetailsByEmail(String email);
-    public UserEntity getUserByEmail(String email);
-
+    CustomUserDetails getUserDetailsByEmail(String email);
+    UserEntity getUserByEmail(String email);
+    void activate(ActivationRequestDto activationRequestDto);
 }

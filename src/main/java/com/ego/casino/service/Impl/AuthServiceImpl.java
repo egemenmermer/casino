@@ -11,6 +11,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -60,11 +63,9 @@ public class AuthServiceImpl implements AuthService {
         String content = "Hello " + registerRequestDto.getEmail() + ",\n\nYour registration was successful. "
                 + "Activate your account with this token:\n\n" + token + "\n\nThank you!";
 
-
         if (userService.findByEmail(email) != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exist");
         }
-
 
         UserEntity userEntity = new UserEntity();
         TokenEntity tokenEntity = new TokenEntity();
@@ -72,12 +73,13 @@ public class AuthServiceImpl implements AuthService {
         userEntity.setEmail(email);
         userEntity.setPassword(passwordEncoder.passwordEncoderBean().encode(password));
         tokenEntity.setToken(token);
-        //user_id kaydolmasi lazim
 
         userService.createUser(userEntity);
         tokenService.saveToken(tokenEntity);
         mailService.sendMail(email, subject, content);
     }
+
+
 
     @Override
     public CustomUserDetails getUserDetailsByEmail(String email) throws UsernameNotFoundException {
@@ -89,6 +91,14 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public UserEntity getUserByEmail(String email) {
         return userService.findByEmail(email);
+    }
+
+    @Override
+    public void activate(ActivationRequestDto activationRequestDto) {
+        UserEntity user = userService.findByEmail(activationRequestDto.getEmail());
+
+        user.setActivatedAt(Timestamp.valueOf(LocalDateTime.now()));
+        userService.createUser(user);
     }
 
 }
