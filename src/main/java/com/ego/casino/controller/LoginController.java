@@ -2,8 +2,11 @@ package com.ego.casino.controller;
 
 import com.ego.casino.dto.LoginRequestDto;
 import com.ego.casino.dto.LoginResponseDto;
+import com.ego.casino.entity.TokenEntity;
 import com.ego.casino.entity.UserEntity;
+import com.ego.casino.security.CustomUserDetails;
 import com.ego.casino.service.Impl.AuthServiceImpl;
+import com.ego.casino.service.Impl.TokenServiceImpl;
 import com.ego.casino.service.Impl.UserServiceImpl;
 import com.ego.casino.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,19 +40,22 @@ public class LoginController {
     @Autowired
     private UserServiceImpl userServiceImpl;
 
-    /*
-    @PostMapping("/authenticate")
-    public ResponseEntity<LoginResponseDto> createAuthenticationToken(@RequestBody LoginRequestDto loginRequestDto)
-            throws Exception {
-        validateUser(loginRequestDto.getEmail(), loginRequestDto.getPassword());
+    @Autowired
+    private TokenServiceImpl tokenServiceImpl;
+
+    @PostMapping
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
+        authServiceImpl.login(loginRequestDto);
+
+        //validateUser(loginRequestDto.getEmail(), loginRequestDto.getPassword());
+
         UserEntity userEntity = authServiceImpl.getUserByEmail(loginRequestDto.getEmail());
+        TokenEntity tokenEntity = tokenServiceImpl.findByUserId(userEntity.getId());
 
-
-        return ResponseEntity.ok(new LoginResponseDto(userEntity.getToken()));
+        return ResponseEntity.ok(new LoginResponseDto());
     }
 
-     */
-
+    /*
     private void validateUser(String email, String password) throws Exception {
         try{
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
@@ -59,4 +65,6 @@ public class LoginController {
             throw new Exception("INVALID_CREDENTIALS", e);
         }
     }
+
+     */
 }

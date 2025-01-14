@@ -8,8 +8,12 @@ import com.ego.casino.security.CustomUserDetails;
 import com.ego.casino.service.AuthService;
 import com.ego.casino.util.JwtTokenUtil;
 import jakarta.transaction.Transactional;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.sql.Timestamp;
@@ -30,7 +34,12 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private MailServiceImpl mailService;
 
+    @Autowired
     private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
+
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
@@ -42,17 +51,25 @@ public class AuthServiceImpl implements AuthService {
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         String password = loginRequestDto.getPassword();
         String email = loginRequestDto.getEmail();
-        Long userId = loginRequestDto.getUser().getId();
 
         UserEntity userEntity = userService.findByEmail(email);
-        TokenEntity tokenEntity = tokenService.findByUserId(userId);
-
-        if(!passwordEncoder.passwordEncoderBean().matches(password, userEntity.getPassword())){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
+        if (userEntity == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email");
         }
-        return new LoginResponseDto(tokenEntity.getToken());
-    }
 
+        if (!passwordEncoder.passwordEncoderBean().matches(password, userEntity.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid password");
+        }
+
+        TokenEntity tokenEntity = tokenService.findByUserId(userEntity.getId());
+        CustomUserDetails userDetails = new CustomUserDetails(email, userEntity.getPassword());
+
+        if(!jwtTokenUtil.validateToken(tokenEntity.getToken(), userDetails)){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
+        }
+
+        return new LoginResponseDto("Login Success!");
+    }
 
     @Override
     @Transactional
@@ -78,8 +95,6 @@ public class AuthServiceImpl implements AuthService {
         tokenService.saveToken(tokenEntity);
         mailService.sendMail(email, subject, content);
     }
-
-
 
     @Override
     public CustomUserDetails getUserDetailsByEmail(String email) throws UsernameNotFoundException {

@@ -2,20 +2,20 @@ package com.ego.casino.dto;
 
 public class LoginResponseDto {
 
-    private String token;
+    private String message;
 
-    public LoginResponseDto(String token) {
-        this.token = token;
+    public LoginResponseDto(String message) {
+        this.message = message;
     }
 
     public LoginResponseDto() {
     }
 
-    public String getToken() {
-        return token;
+    public String getMessage() {
+        return message;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setMessage(String token) {
+        this.message = token;
     }
 }

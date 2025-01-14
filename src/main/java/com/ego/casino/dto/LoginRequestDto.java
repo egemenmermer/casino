@@ -6,7 +6,6 @@ public class LoginRequestDto {
 
     private String email;
     private String password;
-    private UserEntity user;
 
     public LoginRequestDto(String email, String password) {
         this.email = email;
@@ -16,13 +15,6 @@ public class LoginRequestDto {
     public LoginRequestDto() {
     }
 
-    public UserEntity getUser() {
-        return user;
-    }
-
-    public void setUser(UserEntity user) {
-        this.user = user;
-    }
 
     public String getEmail() {
         return email;

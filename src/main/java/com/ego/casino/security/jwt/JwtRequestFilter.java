@@ -40,10 +40,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String requestPath = request.getServletPath();
         logger.info("Incoming request path: " + requestPath);
 
-        if (requestPath.equals(basePath + "/authentication") || requestPath.equals(basePath + "/register") || requestPath.equals(basePath + "/activate")) {
+        if (requestPath.equals(basePath + "/login") || requestPath.equals(basePath + "/register") || requestPath.equals(basePath + "/activate")) {
             filterChain.doFilter(request, response);
             return;
         }
+
 
         final String authorizationHeader = request.getHeader("Authorization");
 
@@ -53,8 +54,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             return;
         }
 
+
         token = authorizationHeader.substring(7);
         email = jwtTokenUtil.extractEmail(token);
+
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             CustomUserDetails userDetails = authService.getUserDetailsByEmail(email);
