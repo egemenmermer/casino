@@ -2,6 +2,8 @@ package com.ego.casino.controller;
 
 import com.ego.casino.dto.*;
 import com.ego.casino.enums.TransactionType;
+import com.ego.casino.security.CurrentUser;
+import com.ego.casino.security.CustomUserDetails;
 import com.ego.casino.service.Impl.AccountServiceImpl;
 import com.ego.casino.service.Impl.TransactionServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,7 +15,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/account/")
+@RequestMapping("/api/v1/account")
 public class AccountController {
 
     @Autowired
@@ -50,5 +52,10 @@ public class AccountController {
     public ResponseEntity<List<TransactionHistoryDto>> getTransactionHistory(@RequestHeader("X-USER-ID") Long userId, @PathVariable Long account_id) {
 
         return ResponseEntity.ok(transactionService.getHistory(account_id));
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<AccountCreateResponseDto> createAccount(@CurrentUser CustomUserDetails userDetails) {
+        return ResponseEntity.ok(accountService.createAccount(userDetails));
     }
 }

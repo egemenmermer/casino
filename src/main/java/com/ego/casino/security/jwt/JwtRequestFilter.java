@@ -4,6 +4,7 @@ import com.ego.casino.security.CustomUserDetails;
 import com.ego.casino.service.Impl.AuthServiceImpl;
 import com.ego.casino.service.Impl.UserServiceImpl;
 import com.ego.casino.util.JwtTokenUtil;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,51 +34,42 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
     private UserServiceImpl userService;
 
-
-    String email = null;
-    String token = null;
-
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
+        final String requestTokenHeader = request.getHeader("Authorization");
 
-        String requestPath = request.getServletPath();
-        logger.info("Incoming request path: " + requestPath);
+        String email = null;
+        String jwtToken = null;
 
-        logger.info("Extracted email from token: " + email);
-        logger.info("Principal: " + SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-
-
-        if (requestPath.equals(basePath + "/login") || requestPath.equals(basePath + "/register") || requestPath.equals(basePath + "/activate")) {
-            filterChain.doFilter(request, response);
-            return;
+        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
+            jwtToken = requestTokenHeader.substring(7);
+            try {
+                email = jwtTokenUtil.getEmailFromToken(jwtToken);
+            } catch (IllegalArgumentException e) {
+                logger.error("Unable to get JWT Token");
+            } catch (ExpiredJwtException e) {
+                logger.error("JWT Token has expired");
+            }
+        } else {
+            logger.warn("JWT Token does not begin with Bearer String");
         }
-
-        final String authorizationHeader = request.getHeader("Authorization");
-
-        if(authorizationHeader == null && !authorizationHeader.startsWith("Bearer ")) {
-            logger.warn("Authorization header is empty");
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        token = authorizationHeader.substring(7);
-        email = jwtTokenUtil.extractEmail(token);
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            CustomUserDetails userDetails = userService.getUserDetailsByEmail(email);
+            CustomUserDetails userDetails = this.userService.getUserDetailsByEmail(email);
 
-            if (jwtTokenUtil.validateToken(token, userDetails)) {
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                usernamePasswordAuthenticationToken
-                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
 
+        logger.info("JWT Token: " + jwtToken);
+        logger.info("Email: " + email);
 
-        filterChain.doFilter(request, response);
 
+        chain.doFilter(request, response);
     }
 }

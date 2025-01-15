@@ -1,12 +1,15 @@
 package com.ego.casino.service.Impl;
 
+import com.ego.casino.dto.AccountCreateResponseDto;
 import com.ego.casino.dto.AccountDto;
 import com.ego.casino.dto.DepositResponseDto;
 import com.ego.casino.dto.WithdrawResponseDto;
 import com.ego.casino.entity.AccountEntity;
+import com.ego.casino.entity.UserEntity;
 import com.ego.casino.enums.TransactionType;
 import com.ego.casino.exception.ResourceNotFoundException;
 import com.ego.casino.repository.AccountRepository;
+import com.ego.casino.security.CustomUserDetails;
 import com.ego.casino.service.AccountService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -23,6 +27,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private UserServiceImpl userService;
 
     @Autowired
     private TransactionServiceImpl transactionService;
@@ -56,6 +63,7 @@ public class AccountServiceImpl implements AccountService {
         }
 
         account.setBalance(account.getBalance().add(amount));
+        account.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
         updateAccount(account);
         transactionService.createTransaction(account, amount, account.getBalance(), transactionType, LocalDateTime.now());
         return new DepositResponseDto(account.getId(),transactionType, LocalDateTime.now(),account.getBalance());
@@ -72,6 +80,7 @@ public class AccountServiceImpl implements AccountService {
         }
 
         account.setBalance(account.getBalance().subtract(amount));
+        account.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
         updateAccount(account);
         transactionService.createTransaction(account, amount, account.getBalance(), transactionType, LocalDateTime.now());
         return new WithdrawResponseDto(account.getId(),transactionType, LocalDateTime.now(),account.getBalance());
@@ -91,5 +100,16 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
+    public AccountCreateResponseDto createAccount(CustomUserDetails user) {
+        UserEntity userEntity = userService.findByEmail(user.getEmail());
+        AccountEntity account = new AccountEntity();
+        account.setUserId(userEntity);
+        account.setBalance(BigDecimal.ZERO);
+        account.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
 
+        userService.createUser(userEntity);
+        accountRepository.save(account);
+
+        return new AccountCreateResponseDto("Account Created");
+    }
 }
