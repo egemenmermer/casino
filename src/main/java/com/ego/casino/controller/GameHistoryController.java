@@ -28,6 +28,6 @@ public class GameHistoryController {
     @Operation(summary = "Get Game History")
     public ResponseEntity<List<GameHistoryDto>> getHistory(@RequestParam Long account_id, @CurrentUser CustomUserDetails currentUser) {
 
-        return ResponseEntity.ok(gameHistoryService.getHistory(account_id));
+        return ResponseEntity.ok(gameHistoryService.getHistory(currentUser, account_id));
     }
 }

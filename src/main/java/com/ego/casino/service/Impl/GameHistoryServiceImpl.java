@@ -5,8 +5,10 @@ import com.ego.casino.dto.PlayGameRequestDto;
 import com.ego.casino.entity.AccountEntity;
 import com.ego.casino.entity.GameEntity;
 import com.ego.casino.entity.GameHistoryEntity;
+import com.ego.casino.entity.UserEntity;
 import com.ego.casino.exception.ResourceNotFoundException;
 import com.ego.casino.repository.GameHistoryRepository;
+import com.ego.casino.security.CustomUserDetails;
 import com.ego.casino.service.GameHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,9 @@ public class GameHistoryServiceImpl implements GameHistoryService {
     @Autowired
     AccountServiceImpl accountService;
 
+    @Autowired
+    UserServiceImpl userService;
+
     @Override
     public void createGameHistory(AccountEntity accountEntity, GameEntity gameEntity, BigDecimal oldBalance, BigDecimal newBalance, PlayGameRequestDto playGameRequestDto, String status) {
         GameHistoryEntity gameHistoryEntity = new GameHistoryEntity();
@@ -40,11 +45,12 @@ public class GameHistoryServiceImpl implements GameHistoryService {
     }
 
     @Override
-    public List<GameHistoryDto> getHistory(Long id) {
+    public List<GameHistoryDto> getHistory(CustomUserDetails userDetails, Long accountId) {
 
-        AccountEntity accountEntity = accountService.findAccount(id).orElseThrow(
-                () -> new ResourceNotFoundException("Account not found!")
-        );
+        UserEntity userEntity = userService.getUserByEmail(userDetails.getEmail());
+        AccountEntity accountEntity = accountService.findAccountByUserId(userEntity, accountId)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found for this user"));
+
         return gameHistoryRepository
                 .findByAccountId(accountEntity.getId())
                 .stream()
