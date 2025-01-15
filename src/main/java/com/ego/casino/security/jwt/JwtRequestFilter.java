@@ -25,12 +25,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-    @Value("${api.base.path}")
-    private String basePath;
-
-    @Autowired
-    private AuthServiceImpl authService;
-
     @Autowired
     private UserServiceImpl userService;
 

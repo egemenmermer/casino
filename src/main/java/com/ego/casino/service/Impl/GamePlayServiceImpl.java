@@ -4,8 +4,10 @@ import com.ego.casino.dto.PlayGameRequestDto;
 import com.ego.casino.dto.PlayGameResponseDto;
 import com.ego.casino.entity.AccountEntity;
 import com.ego.casino.entity.GameEntity;
+import com.ego.casino.entity.UserEntity;
 import com.ego.casino.enums.TransactionType;
 import com.ego.casino.exception.ResourceNotFoundException;
+import com.ego.casino.security.CustomUserDetails;
 import com.ego.casino.service.GamePlayService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,15 +29,18 @@ public class GamePlayServiceImpl implements GamePlayService {
     GameHistoryServiceImpl gameHistoryService;
 
     @Autowired
+    UserServiceImpl userService;
+
+    @Autowired
     private GameListingServiceImpl gameListingService;
 
     @Transactional
     @Override
-    public PlayGameResponseDto playGame(Long id, Long gameId , PlayGameRequestDto playGameRequestDto) {
+    public PlayGameResponseDto playGame(CustomUserDetails userDetails,Long accountId, Long gameId, PlayGameRequestDto playGameRequestDto) {
+        UserEntity userEntity = userService.getUserByEmail(userDetails.getEmail());
+        AccountEntity accountEntity = accountService.findAccountByUserId(userEntity, accountId)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found for this user"));
 
-        AccountEntity accountEntity = accountService.findAccount(id).orElseThrow(
-                () -> new ResourceNotFoundException("Account not found!")
-        );
         GameEntity gameEntity = gameListingService.findGame(gameId).orElseThrow(
                 () -> new ResourceNotFoundException("Game not found!")
         );

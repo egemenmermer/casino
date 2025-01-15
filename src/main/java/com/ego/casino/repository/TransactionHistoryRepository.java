@@ -1,6 +1,7 @@
 package com.ego.casino.repository;
 
 import com.ego.casino.entity.TransactionHistoryEntity;
+import com.ego.casino.security.CustomUserDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

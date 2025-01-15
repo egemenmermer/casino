@@ -1,9 +1,6 @@
 package com.ego.casino.service.Impl;
 
-import com.ego.casino.dto.AccountCreateResponseDto;
-import com.ego.casino.dto.AccountDto;
-import com.ego.casino.dto.DepositResponseDto;
-import com.ego.casino.dto.WithdrawResponseDto;
+import com.ego.casino.dto.*;
 import com.ego.casino.entity.AccountEntity;
 import com.ego.casino.entity.UserEntity;
 import com.ego.casino.enums.TransactionType;
@@ -15,12 +12,15 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -35,29 +35,22 @@ public class AccountServiceImpl implements AccountService {
     private TransactionServiceImpl transactionService;
 
     @Override
-    public AccountDto getBalance(Long id) {
-        AccountEntity account = accountRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Account not found!")
-        );
+    public AccountDto getBalance(CustomUserDetails userDetails, Long accountId) {
+        UserEntity userEntity = userService.getUserByEmail(userDetails.getEmail());
+        AccountEntity account = findAccountByUserId(userEntity, accountId)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found for this user"));
+
         AccountDto accountDto = new AccountDto(account.getId(), account.getBalance());
-
         return accountDto;
-    }
-
-    public Optional<AccountEntity> findAccount(Long id) {
-        return accountRepository.findById(id);
-    }
-
-    public void updateAccount(AccountEntity account) {
-        accountRepository.save(account);
     }
 
     @Override
     @Transactional
-    public DepositResponseDto deposit(Long accountId, BigDecimal amount, TransactionType transactionType) {
-        AccountEntity account = findAccount(accountId).orElseThrow(
-                () -> new ResourceNotFoundException("Account not found!")
-        );
+    public DepositResponseDto deposit(CustomUserDetails userDetails, Long accountId, BigDecimal amount, TransactionType transactionType) {
+        UserEntity userEntity = userService.getUserByEmail(userDetails.getEmail());
+        AccountEntity account = findAccountByUserId(userEntity, accountId)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found for this user"));
+
         if(amount.compareTo(BigDecimal.ZERO) < 0){
             return (DepositResponseDto) ResponseEntity.status(HttpStatus.BAD_REQUEST);
         }
@@ -65,16 +58,19 @@ public class AccountServiceImpl implements AccountService {
         account.setBalance(account.getBalance().add(amount));
         account.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
         updateAccount(account);
+
         transactionService.createTransaction(account, amount, account.getBalance(), transactionType, LocalDateTime.now());
         return new DepositResponseDto(account.getId(),transactionType, LocalDateTime.now(),account.getBalance());
-
     }
+
     @Override
     @Transactional
-    public WithdrawResponseDto withdraw(Long accountId, BigDecimal amount, TransactionType transactionType) {
-        AccountEntity account = findAccount(accountId).orElseThrow(
-                () -> new ResourceNotFoundException("Account not found!")
-        );
+    public WithdrawResponseDto withdraw(CustomUserDetails userDetails ,Long accountId, BigDecimal amount, TransactionType transactionType) {
+        UserEntity userEntity = userService.getUserByEmail(userDetails.getEmail());
+        AccountEntity account = findAccountByUserId(userEntity, accountId)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found for this user"));
+
+
         if(amount.compareTo(BigDecimal.ZERO) < 0){
             return (WithdrawResponseDto) ResponseEntity.status(HttpStatus.BAD_REQUEST);
         }
@@ -87,19 +83,23 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
-    /*
     @Override
-    public ResponseEntity<UserDto> retrieveAccounts(Long id) {
-        return null;
+    public List<AccountDto> getAllAccounts(CustomUserDetails userEntity) {
+        UserEntity user = userService.getUserByEmail(userEntity.getEmail());
+        return accountRepository
+                .findAccountEntitiesByUserId(user)
+                .stream()
+                .map(accountEntity -> new AccountDto(
+                        accountEntity.getId(),
+                        user,
+                        accountEntity.getBalance(),
+                        accountEntity.getCreatedAt(),
+                        accountEntity.getUpdatedAt()
+                ))
+                .collect(Collectors.toList());
     }
-     */
 
-    public void updateBalance(AccountEntity accountEntity, BigDecimal newBalance){
-        accountEntity.setBalance(newBalance);
-        accountRepository.save(accountEntity);
-    }
-
-
+    @Override
     public AccountCreateResponseDto createAccount(CustomUserDetails user) {
         UserEntity userEntity = userService.findByEmail(user.getEmail());
         AccountEntity account = new AccountEntity();
@@ -112,4 +112,24 @@ public class AccountServiceImpl implements AccountService {
 
         return new AccountCreateResponseDto("Account Created");
     }
+
+    public Optional<AccountEntity> findAccount(Long id) {
+        return accountRepository.findById(id);
+    }
+
+    public Optional<AccountEntity> findAccountByUserId(UserEntity userId, Long accountId) {
+        return accountRepository.findAccountEntitiesByUserIdAndId(userId, accountId);
+    }
+
+    public void updateAccount(AccountEntity account) {
+        accountRepository.save(account);
+    }
+
+
+    public void updateBalance(AccountEntity accountEntity, BigDecimal newBalance){
+        accountEntity.setBalance(newBalance);
+        accountRepository.save(accountEntity);
+    }
+
+
 }

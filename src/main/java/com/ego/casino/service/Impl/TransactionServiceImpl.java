@@ -1,16 +1,16 @@
 package com.ego.casino.service.Impl;
 
-import com.ego.casino.dto.DepositResponseDto;
-import com.ego.casino.dto.TransactionDto;
-import com.ego.casino.dto.TransactionHistoryDto;
-import com.ego.casino.dto.WithdrawResponseDto;
+import com.ego.casino.dto.*;
 import com.ego.casino.entity.AccountEntity;
 import com.ego.casino.entity.TransactionHistoryEntity;
+import com.ego.casino.entity.UserEntity;
 import com.ego.casino.enums.TransactionType;
 import com.ego.casino.exception.ResourceNotFoundException;
 import com.ego.casino.repository.TransactionHistoryRepository;
+import com.ego.casino.security.CustomUserDetails;
 import com.ego.casino.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,6 +27,14 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private TransactionHistoryRepository transactionHistoryRepository;
 
+    @Lazy
+    @Autowired
+    private AccountServiceImpl accountService;
+
+    @Lazy
+    @Autowired
+    private UserServiceImpl userService;
+
     @Override
     public void createTransaction(AccountEntity account, BigDecimal amount, BigDecimal finalBalance, TransactionType transactionType, LocalDateTime created_at) {
         TransactionHistoryEntity transactionHistoryEntity = new TransactionHistoryEntity();
@@ -39,10 +47,13 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<TransactionHistoryDto> getHistory(Long id) {
+    public List<TransactionHistoryDto> getHistory(CustomUserDetails userDetails , Long accountId) {
+        UserEntity userEntity = userService.getUserByEmail(userDetails.getEmail());
+        AccountEntity account = accountService.findAccountByUserId(userEntity, accountId)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found for this user"));
 
         return transactionHistoryRepository
-                .findByAccountId(id)
+                .findByAccountId(account.getId())
                 .stream()
                 .map(transactionHistoryEntity -> new TransactionHistoryDto(
                         transactionHistoryEntity.getId(),
@@ -55,4 +66,6 @@ public class TransactionServiceImpl implements TransactionService {
                 .collect(Collectors.toList());
 
     }
+
+
 }

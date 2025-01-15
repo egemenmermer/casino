@@ -26,36 +26,42 @@ public class AccountController {
 
     @Operation(summary = "Deposit", description = "Deposit by AccountID")
     @PostMapping("/{account_id}/deposit")
-    public ResponseEntity<DepositResponseDto> deposit(@RequestHeader("X-USER-ID") Long userId, @PathVariable Long accountID, @RequestBody DepositRequestDto depositRequestDto) {
+    public ResponseEntity<DepositResponseDto> deposit(@CurrentUser CustomUserDetails currentUser, @PathVariable Long account_id, @RequestBody DepositRequestDto depositRequestDto) {
 
-        DepositResponseDto depositResponseDto = accountService.deposit(accountID, BigDecimal.valueOf(depositRequestDto.getAmount().doubleValue()), TransactionType.DEPOSIT);
+        DepositResponseDto depositResponseDto = accountService.deposit(currentUser, account_id , BigDecimal.valueOf(depositRequestDto.getAmount().doubleValue()), TransactionType.DEPOSIT);
         return ResponseEntity.ok(depositResponseDto);
     }
 
     @Operation(summary = "Withdraw", description = "Withdraw by AccountID")
     @PostMapping("/{account_id}/withdraw")
-    public ResponseEntity<WithdrawResponseDto> withdraw(@RequestHeader("X-USER-ID") Long userId, @PathVariable Long accountId, @RequestBody WithdrawRequestDto withdrawRequestDto) {
+    public ResponseEntity<WithdrawResponseDto> withdraw(@CurrentUser CustomUserDetails currentUser, @PathVariable Long account_id, @RequestBody WithdrawRequestDto withdrawRequestDto) {
 
-        WithdrawResponseDto withdrawResponseDto = accountService.withdraw(accountId, BigDecimal.valueOf(withdrawRequestDto.getAmount().doubleValue()), TransactionType.WITHDRAW);
+        WithdrawResponseDto withdrawResponseDto = accountService.withdraw(currentUser, account_id, BigDecimal.valueOf(withdrawRequestDto.getAmount().doubleValue()), TransactionType.WITHDRAW);
         return ResponseEntity.ok(withdrawResponseDto);
     }
 
     @Operation(summary = "Get Account")
     @GetMapping("/{account_id}")
-    public ResponseEntity<AccountDto> getAccount(@RequestHeader("X-USER-ID") Long userId, @PathVariable Long account_id) {
+    public ResponseEntity<AccountDto> getBalance(@CurrentUser CustomUserDetails userDetails, @PathVariable Long account_id) {
 
-        return ResponseEntity.ok(accountService.getBalance(account_id));
+        return ResponseEntity.ok(accountService.getBalance(userDetails, account_id));
     }
 
     @Operation(summary = "Get Transaction History")
     @GetMapping("/{account_id}/transactions")
-    public ResponseEntity<List<TransactionHistoryDto>> getTransactionHistory(@RequestHeader("X-USER-ID") Long userId, @PathVariable Long account_id) {
+    public ResponseEntity<List<TransactionHistoryDto>> getTransactionHistory(@CurrentUser CustomUserDetails userDetails, @PathVariable Long account_id) {
 
-        return ResponseEntity.ok(transactionService.getHistory(account_id));
+        return ResponseEntity.ok(transactionService.getHistory(userDetails, account_id));
     }
-
+    @Operation(summary = "Create Account")
     @PostMapping("/create")
     public ResponseEntity<AccountCreateResponseDto> createAccount(@CurrentUser CustomUserDetails userDetails) {
         return ResponseEntity.ok(accountService.createAccount(userDetails));
+    }
+
+    @GetMapping("/")
+    @Operation(summary = "Get All Accounts")
+    public ResponseEntity<List<AccountDto>> getAllAccounts(@CurrentUser CustomUserDetails currentUser) {
+        return ResponseEntity.ok(accountService.getAllAccounts(currentUser));
     }
 }

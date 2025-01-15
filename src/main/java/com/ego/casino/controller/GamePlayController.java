@@ -2,6 +2,8 @@ package com.ego.casino.controller;
 
 import com.ego.casino.dto.PlayGameRequestDto;
 import com.ego.casino.dto.PlayGameResponseDto;
+import com.ego.casino.security.CurrentUser;
+import com.ego.casino.security.CustomUserDetails;
 import com.ego.casino.service.GamePlayService;
 import com.ego.casino.service.GameService;
 import com.ego.casino.service.Impl.GamePlayServiceImpl;
@@ -20,8 +22,8 @@ public class GamePlayController {
 
     @PostMapping("/play/{gameId}")
     @Operation(summary = "Play Game By GameId")
-    public ResponseEntity<PlayGameResponseDto> playGame(@RequestHeader("X-USER-ID")Long id,@PathVariable Long gameId, @RequestBody PlayGameRequestDto playGameRequestDto){
-        PlayGameResponseDto playGameResponseDto = gamePlayService.playGame(id, gameId, playGameRequestDto);
+    public ResponseEntity<PlayGameResponseDto> playGame(@CurrentUser CustomUserDetails currentUser,@RequestParam Long account_id, @PathVariable Long gameId, @RequestBody PlayGameRequestDto playGameRequestDto){
+        PlayGameResponseDto playGameResponseDto = gamePlayService.playGame(currentUser, account_id, gameId, playGameRequestDto);
         return new ResponseEntity<>(playGameResponseDto, HttpStatus.OK);
     }
 }
