@@ -7,6 +7,7 @@ import com.ego.casino.dto.RegisterResponseDto;
 import com.ego.casino.security.CustomUserDetails;
 import com.ego.casino.service.AuthService;
 import com.ego.casino.service.Impl.AuthServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ public class ActivationController {
     @Autowired
     private AuthServiceImpl authService;
 
+    @Operation(summary = "Activate Account")
     @PostMapping
     public ResponseEntity<ActivationResponseDto> activate(@RequestBody ActivationRequestDto activationRequestDto) {
         authService.activate(activationRequestDto);

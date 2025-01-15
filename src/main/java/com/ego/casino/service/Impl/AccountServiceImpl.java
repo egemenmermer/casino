@@ -57,7 +57,7 @@ public class AccountServiceImpl implements AccountService {
 
         account.setBalance(account.getBalance().add(amount));
         account.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
-        updateAccount(account);
+        accountRepository.save(account);
 
         transactionService.createTransaction(account, amount, account.getBalance(), transactionType, LocalDateTime.now());
         return new DepositResponseDto(account.getId(),transactionType, LocalDateTime.now(),account.getBalance());
@@ -77,7 +77,6 @@ public class AccountServiceImpl implements AccountService {
 
         account.setBalance(account.getBalance().subtract(amount));
         account.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
-        updateAccount(account);
         transactionService.createTransaction(account, amount, account.getBalance(), transactionType, LocalDateTime.now());
         return new WithdrawResponseDto(account.getId(),transactionType, LocalDateTime.now(),account.getBalance());
 
@@ -113,22 +112,18 @@ public class AccountServiceImpl implements AccountService {
         return new AccountCreateResponseDto("Account Created");
     }
 
-    public Optional<AccountEntity> findAccount(Long id) {
-        return accountRepository.findById(id);
-    }
 
     public Optional<AccountEntity> findAccountByUserId(UserEntity userId, Long accountId) {
         return accountRepository.findAccountEntitiesByUserIdAndId(userId, accountId);
     }
 
-    public void updateAccount(AccountEntity account) {
-        accountRepository.save(account);
-    }
-
-
     public void updateBalance(AccountEntity accountEntity, BigDecimal newBalance){
         accountEntity.setBalance(newBalance);
         accountRepository.save(accountEntity);
+    }
+
+    public List<TransactionHistoryDto> getTransactionHistory(CustomUserDetails userEntity, Long accountId) {
+        return transactionService.getHistory(userEntity, accountId);
     }
 
 

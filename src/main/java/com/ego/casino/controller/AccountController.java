@@ -51,7 +51,7 @@ public class AccountController {
     @GetMapping("/{account_id}/transactions")
     public ResponseEntity<List<TransactionHistoryDto>> getTransactionHistory(@CurrentUser CustomUserDetails userDetails, @PathVariable Long account_id) {
 
-        return ResponseEntity.ok(transactionService.getHistory(userDetails, account_id));
+        return ResponseEntity.ok(accountService.getTransactionHistory(userDetails, account_id));
     }
     @Operation(summary = "Create Account")
     @PostMapping("/create")

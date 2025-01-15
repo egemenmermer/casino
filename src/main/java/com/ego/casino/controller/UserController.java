@@ -34,9 +34,7 @@ public class UserController {
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
-
          */
-
         return ResponseEntity.ok(new UserDto(user.getId(), currentUser.getEmail()));
     }
 
