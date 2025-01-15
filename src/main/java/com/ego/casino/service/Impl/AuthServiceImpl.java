@@ -1,25 +1,20 @@
 package com.ego.casino.service.Impl;
 
 import com.ego.casino.configuration.PasswordEncoder;
-import com.ego.casino.entity.TokenEntity;
 import com.ego.casino.entity.UserEntity;
 import com.ego.casino.security.CustomUserDetails;
 import com.ego.casino.service.AuthService;
 import com.ego.casino.dto.*;
-import com.ego.casino.util.JwtTokenUtil;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.*;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -34,13 +29,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private  JwtTokenUtil tokenUtil;
-
-    @Autowired
-    private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
-
 
     @Override
     @Transactional
@@ -82,7 +70,6 @@ public class AuthServiceImpl implements AuthService {
         }
 
         UserEntity userEntity = new UserEntity();
-        TokenEntity tokenEntity = new TokenEntity();
 
         userEntity.setEmail(email);
         userEntity.setPassword(passwordEncoder.passwordEncoderBean().encode(password));
