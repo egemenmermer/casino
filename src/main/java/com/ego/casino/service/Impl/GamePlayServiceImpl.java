@@ -36,7 +36,7 @@ public class GamePlayServiceImpl implements GamePlayService {
 
     @Transactional
     @Override
-    public PlayGameResponseDto playGame(CustomUserDetails userDetails,Long accountId, Long gameId, PlayGameRequestDto playGameRequestDto) {
+    public PlayGameResponseDto playGame(CustomUserDetails userDetails, Long accountId, Long gameId, PlayGameRequestDto playGameRequestDto) {
         UserEntity userEntity = userService.getUserByEmail(userDetails.getEmail());
         AccountEntity accountEntity = accountService.findAccountByUserId(userEntity, accountId)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found for this user"));

@@ -30,9 +30,6 @@ public class AuthServiceImpl implements AuthService {
     private UserServiceImpl userService;
 
     @Autowired
-    private TokenServiceImpl tokenService;
-
-    @Autowired
     private MailServiceImpl mailService;
 
     @Autowired
@@ -62,15 +59,6 @@ public class AuthServiceImpl implements AuthService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Account is not activated");
         }
 
-        TokenEntity tokenEntity = tokenService.findByUserId(userEntity);
-        if (tokenEntity == null || !tokenUtil.validateToken(token, new CustomUserDetails(email, userEntity.getPassword()))) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired token");
-        }
-
-        tokenEntity.setToken(token);
-        tokenEntity.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-        tokenEntity.setExpireDate(tokenUtil.getExpirationDateFromToken(token));
-        tokenService.saveToken(tokenEntity);
 
         CustomUserDetails userDetails = new CustomUserDetails(email, userEntity.getPassword());
         UsernamePasswordAuthenticationToken authenticationToken =
@@ -100,33 +88,14 @@ public class AuthServiceImpl implements AuthService {
         userEntity.setPassword(passwordEncoder.passwordEncoderBean().encode(password));
         userService.createUser(userEntity);
 
-        tokenEntity.setToken(token);
-        tokenEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-        tokenEntity.setExpireDate(new Date(System.currentTimeMillis() + (7 * 24 * 60 * 60 * 1000)));
-        tokenEntity.setUserId(userEntity);
-
-        tokenService.saveToken(tokenEntity);
         mailService.sendMail(email, subject, content);
     }
 
     @Override
     public void activate(ActivationRequestDto activationRequestDto) {
         UserEntity user = userService.findByEmail(activationRequestDto.getEmail());
-        TokenEntity tokenEntity = tokenService.findByUserId(user);
-
-        if (tokenEntity == null || !tokenEntity.getToken().equals(activationRequestDto.getToken())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid activation token");
-        }
-
-        if (tokenEntity.getExpireDate().before(new Date())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token has expired");
-        }
 
         user.setActivatedAt(Timestamp.valueOf(LocalDateTime.now()));
-        tokenEntity.setActive(true);
-        tokenEntity.setUserId(user);
-
-        tokenService.saveToken(tokenEntity);
         userService.createUser(user);
     }
 }
