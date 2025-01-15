@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.User;
 
 public interface AuthService {
 
-    LoginResponseDto login(LoginRequestDto loginRequestDto);
+    LoginResponseDto login(LoginRequestDto loginRequestDto, String token);
     void register(RegisterRequestDto registerRequestDto, String token);
     void activate(ActivationRequestDto activationRequestDto);
 }

@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.sql.Timestamp;
@@ -44,12 +46,11 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+    @Transactional
+    public LoginResponseDto login(LoginRequestDto loginRequestDto, String token) {
 
         String password = loginRequestDto.getPassword();
         String email = loginRequestDto.getEmail();
-        logger.info(email);
-        logger.info(password);
 
         UserEntity userEntity = userService.findByEmail(email);
         if (userEntity == null) {
@@ -65,18 +66,21 @@ public class AuthServiceImpl implements AuthService {
         }
 
         TokenEntity tokenEntity = tokenService.findByUserId(userEntity.getId());
-        if (tokenEntity == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token not found for user");
+        if (tokenEntity == null || !tokenUtil.validateToken(token, new CustomUserDetails(email, userEntity.getPassword()))) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired token");
         }
+
+        tokenEntity.setToken(token);
+        tokenEntity.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        tokenEntity.setExpireDate(tokenUtil.getExpirationDateFromToken(token));
+        tokenService.saveToken(tokenEntity);
 
         CustomUserDetails userDetails = new CustomUserDetails(email, userEntity.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-        if (!tokenUtil.validateToken(tokenEntity.getToken(), userDetails)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
-        }
-
-        return new LoginResponseDto("Login Success!");
-
+        return new LoginResponseDto("Login successful", token);
     }
 
     @Override
@@ -101,7 +105,7 @@ public class AuthServiceImpl implements AuthService {
 
         tokenEntity.setToken(token);
         tokenEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-        tokenEntity.setExpireDate(tokenUtil.getExpirationDateFromToken(token));
+        tokenEntity.setExpireDate(new Date(System.currentTimeMillis() + (7 * 24 * 60 * 60 * 1000)));
         tokenEntity.setUserId(userEntity.getId());
         tokenService.saveToken(tokenEntity);
         mailService.sendMail(email, subject, content);
@@ -111,6 +115,14 @@ public class AuthServiceImpl implements AuthService {
     public void activate(ActivationRequestDto activationRequestDto) {
         UserEntity user = userService.findByEmail(activationRequestDto.getEmail());
         TokenEntity tokenEntity = tokenService.findByUserId(user.getId());
+
+        if (tokenEntity == null || !tokenEntity.getToken().equals(activationRequestDto.getToken())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid activation token");
+        }
+
+        if (tokenEntity.getExpireDate().before(new Date())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token has expired");
+        }
 
         user.setActivatedAt(Timestamp.valueOf(LocalDateTime.now()));
         tokenEntity.setActive(true);

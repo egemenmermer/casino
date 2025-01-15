@@ -53,7 +53,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/", "/api/v1/index", "/success", "/login"
-                                , "/activate", "/api/v1/activate",
+                                , "/activate", "/api/v1/activate", "/api/v1/login",
                                 "/authenticate", "/register", "/api/v1/register",
                                 "/api/v1/auth/authenticate" ).permitAll()
                         .requestMatchers(

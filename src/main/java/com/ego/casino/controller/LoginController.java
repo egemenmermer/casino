@@ -30,16 +30,20 @@ public class LoginController {
     private AuthServiceImpl authService;
 
     @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
     private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
 
 
     @PostMapping
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
+        final String newToken = jwtTokenUtil.generateToken(new CustomUserDetails(loginRequestDto.getEmail(), loginRequestDto.getPassword()));
 
         //validateUser(loginRequestDto.getEmail(), loginRequestDto.getPassword());
         //UserEntity userEntity = authServiceImpl.getUserByEmail(loginRequestDto.getEmail());
         //TokenEntity tokenEntity = tokenServiceImpl.findByUserId(userEntity.getId());
-        return ResponseEntity.ok(authService.login(loginRequestDto));
+        return ResponseEntity.ok(authService.login(loginRequestDto, newToken));
     }
 
     /*
