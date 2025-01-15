@@ -22,8 +22,7 @@ public class ActivationController {
     private AuthServiceImpl authService;
 
     @PostMapping
-    public ResponseEntity<ActivationResponseDto> register(@RequestBody ActivationRequestDto activationRequestDto) {
-
+    public ResponseEntity<ActivationResponseDto> activate(@RequestBody ActivationRequestDto activationRequestDto) {
         authService.activate(activationRequestDto);
         return ResponseEntity.ok(new ActivationResponseDto("Account Activated!"));
     }

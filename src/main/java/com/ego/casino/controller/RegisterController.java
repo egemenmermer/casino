@@ -19,6 +19,7 @@ public class RegisterController {
 
     @Autowired
     private AuthServiceImpl authService;
+
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 

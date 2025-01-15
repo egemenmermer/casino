@@ -8,17 +8,11 @@ import com.ego.casino.service.AuthService;
 import com.ego.casino.dto.*;
 import com.ego.casino.util.JwtTokenUtil;
 import jakarta.transaction.Transactional;
-import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.sql.Timestamp;
@@ -41,6 +35,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private  JwtTokenUtil tokenUtil;
 
     @Autowired
     private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
@@ -74,6 +71,10 @@ public class AuthServiceImpl implements AuthService {
         }
 
         TokenEntity tokenEntity = tokenService.findByUserId(userEntity.getId());
+        if (tokenEntity == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token not found for user");
+        }
+
         CustomUserDetails userDetails = new CustomUserDetails(email, userEntity.getPassword());
 
         if (!jwtTokenUtil.validateToken(tokenEntity.getToken(), userDetails)) {
@@ -102,9 +103,12 @@ public class AuthServiceImpl implements AuthService {
 
         userEntity.setEmail(email);
         userEntity.setPassword(passwordEncoder.passwordEncoderBean().encode(password));
-        tokenEntity.setToken(token);
-
         userService.createUser(userEntity);
+
+        tokenEntity.setToken(token);
+        tokenEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
+        tokenEntity.setExpireDate(jwtTokenUtil.getExpirationDateFromToken(token));
+        tokenEntity.setUserId(userEntity.getId());
         tokenService.saveToken(tokenEntity);
         mailService.sendMail(email, subject, content);
     }
@@ -112,7 +116,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public CustomUserDetails getUserDetailsByEmail(String email) throws UsernameNotFoundException {
         UserEntity user = userService.findByEmail(email);
-
         return new CustomUserDetails(user.getEmail(), user.getPassword(), new ArrayList<>());
     }
 
@@ -124,8 +127,13 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void activate(ActivationRequestDto activationRequestDto) {
         UserEntity user = userService.findByEmail(activationRequestDto.getEmail());
+        TokenEntity tokenEntity = tokenService.findByUserId(user.getId());
 
         user.setActivatedAt(Timestamp.valueOf(LocalDateTime.now()));
+        tokenEntity.setActive(true);
+        tokenEntity.setUserId(user.getId());
+
+        tokenService.saveToken(tokenEntity);
         userService.createUser(user);
     }
 

@@ -1,10 +1,9 @@
 package com.ego.casino.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity
 @Table(name = "tokens")
@@ -26,17 +25,17 @@ public class TokenEntity {
     private Timestamp createdAt;
 
     @Column(nullable = false, name = "expires_at")
-    private Timestamp expiresAt;
+    private Date expireDate;
 
     @Column(nullable = false, name = "is_active")
     private Boolean isActive;
 
-    public TokenEntity(Long id, Long userId, String token, Timestamp createdAt, Timestamp expiresAt, Boolean isActive) {
+    public TokenEntity(Long id, Long userId, String token, Timestamp createdAt, Date expireDate, Boolean isActive) {
         this.id = id;
         this.userId = userId;
         this.token = token;
         this.createdAt = createdAt;
-        this.expiresAt = expiresAt;
+        this.expireDate = expireDate;
         this.isActive = isActive;
     }
 
@@ -75,13 +74,15 @@ public class TokenEntity {
         this.createdAt = createdAt;
     }
 
-    public Timestamp getExpiresAt() {
-        return expiresAt;
+    public Date getExpireDate() {
+        return expireDate;
     }
 
-    public void setExpiresAt(Timestamp expiresAt) {
-        this.expiresAt = expiresAt;
+    public void setExpireDate(Date expireDate) {
+        this.expireDate = expireDate;
     }
+
+
 
     public Boolean getActive() {
         return isActive;

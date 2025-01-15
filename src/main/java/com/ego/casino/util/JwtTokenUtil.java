@@ -14,7 +14,7 @@ import java.util.function.Function;
 @Component
 public class JwtTokenUtil {
 
-    private static final long TOKEN_VALIDITY = 60 * 60 * 24 * 7;
+    private static final long TOKEN_VALIDITY = 1000L * 60 * 60 * 24 * 7;
     private static final SignatureAlgorithm SIGNING_ALGORITHM = SignatureAlgorithm.HS512;
     private final SecretKey secret = Keys.secretKeyFor(SIGNING_ALGORITHM);
 

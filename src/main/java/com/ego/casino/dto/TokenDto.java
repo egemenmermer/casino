@@ -1,11 +1,7 @@
 package com.ego.casino.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
 import java.sql.Timestamp;
+import java.util.Date;
 
 public class TokenDto {
 
@@ -13,15 +9,15 @@ public class TokenDto {
     private Long userId;
     private String token;
     private Timestamp createdAt;
-    private Timestamp expiresAt;
+    private Date expiresDate;
     private Boolean isActive;
 
-    public TokenDto(Long id, Long userId, String token, Timestamp createdAt, Timestamp expiresAt, Boolean isActive) {
+    public TokenDto(Long id, Long userId, String token, Timestamp createdAt, Timestamp expiresDate, Boolean isActive) {
         this.id = id;
         this.userId = userId;
         this.token = token;
         this.createdAt = createdAt;
-        this.expiresAt = expiresAt;
+        this.expiresDate = expiresDate;
         this.isActive = isActive;
     }
 
@@ -60,12 +56,12 @@ public class TokenDto {
         this.createdAt = createdAt;
     }
 
-    public Timestamp getExpiresAt() {
-        return expiresAt;
+    public Date getExpiresDate() {
+        return expiresDate;
     }
 
-    public void setExpiresAt(Timestamp expiresAt) {
-        this.expiresAt = expiresAt;
+    public void setExpiresDate(Date expiresDate) {
+        this.expiresDate = expiresDate;
     }
 
     public Boolean getActive() {
