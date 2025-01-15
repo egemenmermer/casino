@@ -44,6 +44,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String requestPath = request.getServletPath();
         logger.info("Incoming request path: " + requestPath);
 
+        logger.info("Extracted email from token: " + email);
+        logger.info("Principal: " + SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+
         if (requestPath.equals(basePath + "/login") || requestPath.equals(basePath + "/register") || requestPath.equals(basePath + "/activate")) {
             filterChain.doFilter(request, response);
             return;
@@ -57,10 +61,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             return;
         }
 
-
         token = authorizationHeader.substring(7);
         email = jwtTokenUtil.extractEmail(token);
-
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             CustomUserDetails userDetails = userService.getUserDetailsByEmail(email);
@@ -73,6 +75,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
         }
+
+
         filterChain.doFilter(request, response);
 
     }

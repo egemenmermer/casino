@@ -23,12 +23,12 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public ResponseEntity<UserDto> getUser(Long id) {
+    public UserDto getUser(Long id) {
         UserEntity user = userRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("User not found!")
         );
-        UserDto userDto = new UserDto(user.getId(),user.getUsername());
-        return ResponseEntity.ok(userDto);
+
+        return new UserDto(user.getId(),user.getUsername());
     }
 
     @Override

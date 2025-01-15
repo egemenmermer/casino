@@ -1,6 +1,10 @@
 package com.ego.casino.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -81,8 +85,6 @@ public class TokenEntity {
     public void setExpireDate(Date expireDate) {
         this.expireDate = expireDate;
     }
-
-
 
     public Boolean getActive() {
         return isActive;

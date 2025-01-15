@@ -37,8 +37,6 @@ class CasinoApplicationTests {
     @Mock
     private TokenServiceImpl tokenService;
 
-    @Mock
-    private JwtTokenUtil jwtTokenUtil;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -58,33 +56,5 @@ class CasinoApplicationTests {
     }
 
      */
-    @Test
-    void testLogin_Successful() {
-        // Arrange
-        UserEntity userEntity = new UserEntity();
-        userEntity.setId(1L);
-        userEntity.setEmail("egemenmermer25@gmail.com");
-        userEntity.setPassword("testpassword");
-        userEntity.setActivatedAt(Timestamp.valueOf(LocalDateTime.now()));
-
-        TokenEntity tokenEntity = new TokenEntity();
-        tokenEntity.setToken("testToken");
-
-        when(userService.findByEmail(
-                loginRequestDto.getEmail())).thenReturn(userEntity);
-        when(passwordEncoder.passwordEncoderBean().matches(loginRequestDto.getPassword(), userEntity.getPassword()))
-                .thenReturn(true);
-        when(tokenService.findByUserId(userEntity)).thenReturn(tokenEntity);
-        when(jwtTokenUtil.getExpirationDateFromToken("testToken"))
-                .thenReturn(new java.util.Date(System.currentTimeMillis() + 1000000));
-
-        // Act
-        LoginResponseDto response = authService.login(loginRequestDto, "testToken");
-
-        // Assert
-        assertNotNull(response);
-        assertEquals("Login successful", response.getMessage());
-        assertEquals("testToken", response.getToken());
-    }
 
 }

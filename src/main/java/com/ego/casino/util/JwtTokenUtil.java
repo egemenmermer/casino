@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -19,7 +20,11 @@ public class JwtTokenUtil {
     private final SecretKey secret = Keys.secretKeyFor(SIGNING_ALGORITHM);
 
     public String getEmailFromToken(String token) {
-        return getClaimFromToken(token, Claims::getSubject);
+        try {
+            return getClaimFromToken(token, Claims::getSubject);
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid token: " + e.getMessage());
+        }
     }
 
     public Date getExpirationDateFromToken(String token) {
@@ -44,18 +49,18 @@ public class JwtTokenUtil {
         return new Date(System.currentTimeMillis());
     }
 
-    public String generateToken(CustomUserDetails userDetails) {
+    public String generateToken(CustomUserDetails usersDetail) {
         return Jwts.builder()
-                .setSubject(userDetails.getEmail())
+                .setSubject(usersDetail.getEmail())
                 .setIssuedAt(currentDate())
                 .setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY))
                 .signWith(SIGNING_ALGORITHM, secret)
                 .compact();
     }
 
-    public Boolean validateToken(String token, CustomUserDetails userDetails) {
+    public Boolean validateToken(String token, CustomUserDetails usersDetail) {
         final String email = getEmailFromToken(token);
-        return (email.equals(userDetails.getEmail()) && !isTokenExpired(token));
+        return (email.equals(usersDetail.getEmail()) && !isTokenExpired(token));
     }
 
     public String extractEmail(String token) {

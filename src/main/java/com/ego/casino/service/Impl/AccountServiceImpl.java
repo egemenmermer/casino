@@ -28,15 +28,14 @@ public class AccountServiceImpl implements AccountService {
     private TransactionServiceImpl transactionService;
 
     @Override
-    public ResponseEntity<AccountDto> getBalance(Long id) {
+    public AccountDto getBalance(Long id) {
         AccountEntity account = accountRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Account not found!")
         );
         AccountDto accountDto = new AccountDto(account.getId(), account.getBalance());
 
-        return ResponseEntity.ok(accountDto);
+        return accountDto;
     }
-
 
     public Optional<AccountEntity> findAccount(Long id) {
         return accountRepository.findById(id);
@@ -48,34 +47,34 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public ResponseEntity<DepositResponseDto> deposit(Long id, BigDecimal amount, TransactionType transactionType) {
-        AccountEntity account = findAccount(id).orElseThrow(
+    public DepositResponseDto deposit(Long accountId, BigDecimal amount, TransactionType transactionType) {
+        AccountEntity account = findAccount(accountId).orElseThrow(
                 () -> new ResourceNotFoundException("Account not found!")
         );
         if(amount.compareTo(BigDecimal.ZERO) < 0){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return (DepositResponseDto) ResponseEntity.status(HttpStatus.BAD_REQUEST);
         }
 
         account.setBalance(account.getBalance().add(amount));
         updateAccount(account);
         transactionService.createTransaction(account, amount, account.getBalance(), transactionType, LocalDateTime.now());
-        return ResponseEntity.ok(new DepositResponseDto(account.getId(),transactionType, LocalDateTime.now(),account.getBalance()));
+        return new DepositResponseDto(account.getId(),transactionType, LocalDateTime.now(),account.getBalance());
 
     }
     @Override
     @Transactional
-    public ResponseEntity<WithdrawResponseDto> withdraw(Long id, BigDecimal amount, TransactionType transactionType) {
-        AccountEntity account = findAccount(id).orElseThrow(
+    public WithdrawResponseDto withdraw(Long accountId, BigDecimal amount, TransactionType transactionType) {
+        AccountEntity account = findAccount(accountId).orElseThrow(
                 () -> new ResourceNotFoundException("Account not found!")
         );
         if(amount.compareTo(BigDecimal.ZERO) < 0){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return (WithdrawResponseDto) ResponseEntity.status(HttpStatus.BAD_REQUEST);
         }
 
         account.setBalance(account.getBalance().subtract(amount));
         updateAccount(account);
         transactionService.createTransaction(account, amount, account.getBalance(), transactionType, LocalDateTime.now());
-        return ResponseEntity.ok(new WithdrawResponseDto(account.getId(),transactionType, LocalDateTime.now(),account.getBalance()));
+        return new WithdrawResponseDto(account.getId(),transactionType, LocalDateTime.now(),account.getBalance());
 
     }
 

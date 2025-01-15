@@ -1,5 +1,6 @@
 package com.ego.casino.security;
 
+import com.ego.casino.entity.UserEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -22,9 +23,16 @@ public class CustomUserDetails implements UserDetails {
         this.authorities = authorities;
     }
 
+    public CustomUserDetails() {
+    }
+
     public CustomUserDetails(String email, String password) {
         this.email = email;
         this.password = password;
+    }
+
+    public CustomUserDetails(UserEntity user) {
+        this.email = user.getEmail();
     }
 
     public void setEmail(String email) {

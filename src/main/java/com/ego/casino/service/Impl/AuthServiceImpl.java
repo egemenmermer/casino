@@ -53,12 +53,9 @@ public class AuthServiceImpl implements AuthService {
         String email = loginRequestDto.getEmail();
 
         UserEntity userEntity = userService.findByEmail(email);
-        if (userEntity == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email");
-        }
 
-        if (!passwordEncoder.passwordEncoderBean().matches(password, userEntity.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid password");
+        if (!passwordEncoder.passwordEncoderBean().matches(password, userEntity.getPassword()) || userEntity.getEmail() == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
         }
 
         if (userEntity.getActivatedAt() == null) {

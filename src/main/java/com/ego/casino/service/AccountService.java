@@ -12,9 +12,9 @@ import java.math.BigDecimal;
 public interface AccountService {
 
     //public ResponseEntity<UserDto> retrieveAccounts(Long id);
-    public ResponseEntity<AccountDto> getBalance(Long id);
+    public AccountDto getBalance(Long id);
     //public ResponseEntity<AccountDto> updateBalance(Long id, AccountDto accountDto);
-    public ResponseEntity<DepositResponseDto> deposit(Long id, BigDecimal amount, TransactionType transactionType);
-    public ResponseEntity<WithdrawResponseDto> withdraw(Long id, BigDecimal amount, TransactionType transactionType);
+    public DepositResponseDto deposit(Long id, BigDecimal amount, TransactionType transactionType);
+    public WithdrawResponseDto withdraw(Long id, BigDecimal amount, TransactionType transactionType);
 
 }

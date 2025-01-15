@@ -1,12 +1,9 @@
 package com.ego.casino.controller;
 
 import com.ego.casino.dto.*;
-import com.ego.casino.entity.AccountEntity;
 import com.ego.casino.enums.TransactionType;
-import com.ego.casino.service.AccountService;
 import com.ego.casino.service.Impl.AccountServiceImpl;
 import com.ego.casino.service.Impl.TransactionServiceImpl;
-import com.ego.casino.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/account/")
@@ -28,30 +24,30 @@ public class AccountController {
 
     @Operation(summary = "Deposit", description = "Deposit by AccountID")
     @PostMapping("/{account_id}/deposit")
-    public ResponseEntity<DepositResponseDto> deposit(@RequestHeader("X-USER-ID") Long id, @PathVariable Long account_id, @RequestBody DepositRequestDto depositRequestDto) {
+    public ResponseEntity<DepositResponseDto> deposit(@RequestHeader("X-USER-ID") Long userId, @PathVariable Long accountID, @RequestBody DepositRequestDto depositRequestDto) {
 
-        DepositResponseDto depositResponseDto = accountService.deposit(account_id, BigDecimal.valueOf(depositRequestDto.getAmount().doubleValue()), TransactionType.DEPOSIT).getBody();
+        DepositResponseDto depositResponseDto = accountService.deposit(accountID, BigDecimal.valueOf(depositRequestDto.getAmount().doubleValue()), TransactionType.DEPOSIT);
         return ResponseEntity.ok(depositResponseDto);
     }
 
     @Operation(summary = "Withdraw", description = "Withdraw by AccountID")
     @PostMapping("/{account_id}/withdraw")
-    public ResponseEntity<WithdrawResponseDto> withdraw(@RequestHeader("X-USER-ID") Long id, @PathVariable Long account_id, @RequestBody WithdrawRequestDto withdrawRequestDto) {
+    public ResponseEntity<WithdrawResponseDto> withdraw(@RequestHeader("X-USER-ID") Long userId, @PathVariable Long accountId, @RequestBody WithdrawRequestDto withdrawRequestDto) {
 
-        WithdrawResponseDto withdrawResponseDto = accountService.withdraw(account_id, BigDecimal.valueOf(withdrawRequestDto.getAmount().doubleValue()), TransactionType.WITHDRAW).getBody();
+        WithdrawResponseDto withdrawResponseDto = accountService.withdraw(accountId, BigDecimal.valueOf(withdrawRequestDto.getAmount().doubleValue()), TransactionType.WITHDRAW);
         return ResponseEntity.ok(withdrawResponseDto);
     }
 
     @Operation(summary = "Get Account")
     @GetMapping("/{account_id}")
-    public ResponseEntity<AccountDto> getAccount(@RequestHeader("X-USER-ID") Long id, @PathVariable Long account_id) {
+    public ResponseEntity<AccountDto> getAccount(@RequestHeader("X-USER-ID") Long userId, @PathVariable Long account_id) {
 
-        return ResponseEntity.ok(accountService.getBalance(account_id).getBody());
+        return ResponseEntity.ok(accountService.getBalance(account_id));
     }
 
     @Operation(summary = "Get Transaction History")
     @GetMapping("/{account_id}/transactions")
-    public ResponseEntity<List<TransactionHistoryDto>> getTransactionHistory(@RequestHeader("X-USER-ID") Long id, @PathVariable Long account_id) {
+    public ResponseEntity<List<TransactionHistoryDto>> getTransactionHistory(@RequestHeader("X-USER-ID") Long userId, @PathVariable Long account_id) {
 
         return ResponseEntity.ok(transactionService.getHistory(account_id));
     }
