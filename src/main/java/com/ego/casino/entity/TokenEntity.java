@@ -14,9 +14,9 @@ public class TokenEntity {
     @Column(updatable = false, nullable = false, name = "id")
     private Long id;
 
-
-    @Column(nullable = false, name = "user_id")
-    private Long userId;
+    @JoinColumn(nullable = false, name = "user_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private UserEntity userId;
 
     @Column(nullable = false, name = "token")
     private String token;
@@ -30,7 +30,7 @@ public class TokenEntity {
     @Column(nullable = false, name = "is_active")
     private Boolean isActive;
 
-    public TokenEntity(Long id, Long userId, String token, Timestamp createdAt, Date expireDate, Boolean isActive) {
+    public TokenEntity(Long id, UserEntity userId, String token, Timestamp createdAt, Date expireDate, Boolean isActive) {
         this.id = id;
         this.userId = userId;
         this.token = token;
@@ -50,11 +50,11 @@ public class TokenEntity {
         this.id = id;
     }
 
-    public Long getUserId() {
+    public UserEntity getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(UserEntity userId) {
         this.userId = userId;
     }
 

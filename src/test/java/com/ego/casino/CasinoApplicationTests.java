@@ -74,7 +74,7 @@ class CasinoApplicationTests {
                 loginRequestDto.getEmail())).thenReturn(userEntity);
         when(passwordEncoder.passwordEncoderBean().matches(loginRequestDto.getPassword(), userEntity.getPassword()))
                 .thenReturn(true);
-        when(tokenService.findByUserId(userEntity.getId())).thenReturn(tokenEntity);
+        when(tokenService.findByUserId(userEntity)).thenReturn(tokenEntity);
         when(jwtTokenUtil.getExpirationDateFromToken("testToken"))
                 .thenReturn(new java.util.Date(System.currentTimeMillis() + 1000000));
 

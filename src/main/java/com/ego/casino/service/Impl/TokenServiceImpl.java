@@ -5,6 +5,7 @@ import com.ego.casino.entity.UserEntity;
 import com.ego.casino.repository.TokenRepository;
 import com.ego.casino.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,7 +20,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public TokenEntity findByUserId(Long userId) {
+    public TokenEntity findByUserId(UserEntity userId) {
         return tokenRepository.findByUserId(userId);
     }
 
