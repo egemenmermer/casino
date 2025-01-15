@@ -2,6 +2,7 @@ package com.ego.casino.security.jwt;
 
 import com.ego.casino.security.CustomUserDetails;
 import com.ego.casino.service.Impl.AuthServiceImpl;
+import com.ego.casino.service.Impl.UserServiceImpl;
 import com.ego.casino.util.JwtTokenUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -28,6 +29,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
     private AuthServiceImpl authService;
+
+    @Autowired
+    private UserServiceImpl userService;
 
 
     String email = null;
@@ -59,7 +63,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            CustomUserDetails userDetails = authService.getUserDetailsByEmail(email);
+            CustomUserDetails userDetails = userService.getUserDetailsByEmail(email);
 
             if (jwtTokenUtil.validateToken(token, userDetails)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =

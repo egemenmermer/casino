@@ -39,8 +39,6 @@ public class LoginController {
         //validateUser(loginRequestDto.getEmail(), loginRequestDto.getPassword());
         //UserEntity userEntity = authServiceImpl.getUserByEmail(loginRequestDto.getEmail());
         //TokenEntity tokenEntity = tokenServiceImpl.findByUserId(userEntity.getId());
-        System.out.println("Login endpoint hit");
-        logger.info("Login endpoint hit.");
         return ResponseEntity.ok(authService.login(loginRequestDto));
     }
 

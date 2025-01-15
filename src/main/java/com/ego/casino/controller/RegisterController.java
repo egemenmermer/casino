@@ -29,5 +29,4 @@ public class RegisterController {
         authService.register(registerRequestDto, token);
         return ResponseEntity.ok(new RegisterResponseDto(token, "Success!"));
     }
-
 }

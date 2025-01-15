@@ -34,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
     private MailServiceImpl mailService;
 
     @Autowired
-    private final PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private  JwtTokenUtil tokenUtil;
@@ -42,12 +42,6 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
 
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-
-    public AuthServiceImpl(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
@@ -77,7 +71,7 @@ public class AuthServiceImpl implements AuthService {
 
         CustomUserDetails userDetails = new CustomUserDetails(email, userEntity.getPassword());
 
-        if (!jwtTokenUtil.validateToken(tokenEntity.getToken(), userDetails)) {
+        if (!tokenUtil.validateToken(tokenEntity.getToken(), userDetails)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
         }
 
@@ -107,21 +101,10 @@ public class AuthServiceImpl implements AuthService {
 
         tokenEntity.setToken(token);
         tokenEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-        tokenEntity.setExpireDate(jwtTokenUtil.getExpirationDateFromToken(token));
+        tokenEntity.setExpireDate(tokenUtil.getExpirationDateFromToken(token));
         tokenEntity.setUserId(userEntity.getId());
         tokenService.saveToken(tokenEntity);
         mailService.sendMail(email, subject, content);
-    }
-
-    @Override
-    public CustomUserDetails getUserDetailsByEmail(String email) throws UsernameNotFoundException {
-        UserEntity user = userService.findByEmail(email);
-        return new CustomUserDetails(user.getEmail(), user.getPassword(), new ArrayList<>());
-    }
-
-    @Override
-    public UserEntity getUserByEmail(String email) {
-        return userService.findByEmail(email);
     }
 
     @Override
@@ -136,6 +119,4 @@ public class AuthServiceImpl implements AuthService {
         tokenService.saveToken(tokenEntity);
         userService.createUser(user);
     }
-
-
 }

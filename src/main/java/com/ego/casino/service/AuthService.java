@@ -12,7 +12,5 @@ public interface AuthService {
 
     LoginResponseDto login(LoginRequestDto loginRequestDto);
     void register(RegisterRequestDto registerRequestDto, String token);
-    CustomUserDetails getUserDetailsByEmail(String email);
-    UserEntity getUserByEmail(String email);
     void activate(ActivationRequestDto activationRequestDto);
 }
