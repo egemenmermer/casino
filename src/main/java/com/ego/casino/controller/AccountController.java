@@ -23,7 +23,10 @@ public class AccountController {
 
     @Operation(summary = "Deposit", description = "Deposit by AccountID")
     @PostMapping("/{account_id}/deposit")
-    public ResponseEntity<DepositResponseDto> deposit(@CurrentUser CustomUserDetails currentUser, @PathVariable Long account_id, @RequestBody DepositRequestDto depositRequestDto) {
+    public ResponseEntity<DepositResponseDto> deposit(
+            @CurrentUser CustomUserDetails currentUser,
+            @PathVariable Long account_id,
+            @RequestBody DepositRequestDto depositRequestDto) {
         try {
             DepositResponseDto depositResponseDto = accountService.deposit(currentUser, account_id , BigDecimal.valueOf(depositRequestDto.getAmount().doubleValue()), TransactionType.DEPOSIT);
             return ResponseEntity.ok(depositResponseDto);
@@ -34,7 +37,10 @@ public class AccountController {
 
     @Operation(summary = "Withdraw", description = "Withdraw by AccountID")
     @PostMapping("/{account_id}/withdraw")
-    public ResponseEntity<WithdrawResponseDto> withdraw(@CurrentUser CustomUserDetails currentUser, @PathVariable Long account_id, @RequestBody WithdrawRequestDto withdrawRequestDto) {
+    public ResponseEntity<WithdrawResponseDto> withdraw(
+            @CurrentUser CustomUserDetails currentUser,
+            @PathVariable Long account_id,
+            @RequestBody WithdrawRequestDto withdrawRequestDto) {
         try {
             WithdrawResponseDto withdrawResponseDto = accountService.withdraw(currentUser, account_id, BigDecimal.valueOf(withdrawRequestDto.getAmount().doubleValue()), TransactionType.WITHDRAW);
             return ResponseEntity.ok(withdrawResponseDto);
@@ -45,7 +51,9 @@ public class AccountController {
 
     @Operation(summary = "Get Account")
     @GetMapping("/{account_id}")
-    public ResponseEntity<AccountDto> getBalance(@CurrentUser CustomUserDetails userDetails, @PathVariable Long account_id) {
+    public ResponseEntity<AccountDto> getBalance(
+            @CurrentUser CustomUserDetails userDetails,
+            @PathVariable Long account_id) {
         try {
             return ResponseEntity.ok(accountService.getBalance(userDetails, account_id));
         } catch (Exception e) {
@@ -55,7 +63,9 @@ public class AccountController {
 
     @Operation(summary = "Get Transaction History")
     @GetMapping("/{account_id}/transactions")
-    public ResponseEntity<List<TransactionHistoryDto>> getTransactionHistory(@CurrentUser CustomUserDetails userDetails, @PathVariable Long account_id) {
+    public ResponseEntity<List<TransactionHistoryDto>> getTransactionHistory(
+            @CurrentUser CustomUserDetails userDetails,
+            @PathVariable Long account_id) {
         try {
             return ResponseEntity.ok(accountService.getTransactionHistory(userDetails, account_id));
         } catch (Exception e) {
@@ -65,7 +75,8 @@ public class AccountController {
 
     @Operation(summary = "Create Account")
     @PostMapping("/create")
-    public ResponseEntity<AccountCreateResponseDto> createAccount(@CurrentUser CustomUserDetails userDetails) {
+    public ResponseEntity<AccountCreateResponseDto> createAccount(
+            @CurrentUser CustomUserDetails userDetails) {
         try {
             return ResponseEntity.ok(accountService.createAccount(userDetails));
         } catch (Exception e) {
@@ -75,7 +86,8 @@ public class AccountController {
 
     @GetMapping("/")
     @Operation(summary = "Get All Accounts")
-    public ResponseEntity<List<AccountDto>> getAllAccounts(@CurrentUser CustomUserDetails currentUser) {
+    public ResponseEntity<List<AccountDto>> getAllAccounts(
+            @CurrentUser CustomUserDetails currentUser) {
         try {
             return ResponseEntity.ok(accountService.getAllAccounts(currentUser));
         } catch (Exception e) {
