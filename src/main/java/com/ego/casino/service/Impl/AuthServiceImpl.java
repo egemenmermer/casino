@@ -2,6 +2,7 @@ package com.ego.casino.service.Impl;
 
 import com.ego.casino.configuration.PasswordEncoder;
 import com.ego.casino.entity.UserEntity;
+import com.ego.casino.exception.*;
 import com.ego.casino.security.CustomUserDetails;
 import com.ego.casino.service.AuthService;
 import com.ego.casino.dto.*;
@@ -38,13 +39,16 @@ public class AuthServiceImpl implements AuthService {
         String email = loginRequestDto.getEmail();
 
         UserEntity userEntity = userService.findByEmail(email);
+        if (userEntity == null) {
+            throw new UserNotFoundException("User not found");
+        }
 
         if (!passwordEncoder.passwordEncoderBean().matches(password, userEntity.getPassword()) || userEntity.getEmail() == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
+            throw new InvalidCredentialsException("Invalid email or password");
         }
 
         if (userEntity.getActivatedAt() == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Account is not activated");
+            throw new AccountAlreadyActivatedException("Account is not activated");
         }
 
 
@@ -67,16 +71,23 @@ public class AuthServiceImpl implements AuthService {
         String content = "Hello " + registerRequestDto.getUsername() + ",\n\nYour registration was successful. "
                 + "Activate your account with this token:\n\n" + token + "\n\nThank you!";
 
+        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            throw new InvalidEmailFormatException("Email format is invalid");
+        }
+
+        if (password.length() < 8) {
+            throw new WeakPasswordException("Password must be at least 8 characters long");
+        }
+
         if (userService.findByEmail(email) != null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exist");
+            throw new DuplicateEmailException("Email already exists");
         }
 
         if (userService.findByUsername(username) != null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exist");
+            throw new DuplicateUsernameException("Username already exists");
         }
 
         UserEntity userEntity = new UserEntity();
-
         userEntity.setEmail(email);
         userEntity.setUsername(username);
         userEntity.setPassword(passwordEncoder.passwordEncoderBean().encode(password));
@@ -89,7 +100,19 @@ public class AuthServiceImpl implements AuthService {
     public void activate(ActivationRequestDto activationRequestDto) {
         UserEntity user = userService.findByEmail(activationRequestDto.getEmail());
 
-        user.setActivatedAt(Timestamp.valueOf(LocalDateTime.now()));
-        userService.createUser(user);
+        if (user == null) {
+            throw new UserNotFoundException("User not found");
+        }
+
+        if (user.getActivatedAt() != null) {
+            throw new AccountAlreadyActivatedException("Activation already activated");
+        }
+
+        try {
+            user.setActivatedAt(Timestamp.valueOf(LocalDateTime.now()));
+            userService.createUser(user);
+        } catch (Exception e) {
+            throw new ActivationFailedException("Error while activating the account.");
+        }
     }
 }

@@ -49,8 +49,15 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public List<TransactionHistoryDto> getHistory(CustomUserDetails userDetails , Long accountId) {
         UserEntity userEntity = userService.getUserByEmail(userDetails.getEmail());
+        if (userEntity == null) {
+            throw new ResourceNotFoundException("User not found for email: " + userDetails.getEmail());
+        }
+
         AccountEntity account = accountService.findAccountByUserId(userEntity, accountId)
-                .orElseThrow(() -> new ResourceNotFoundException("Account not found for this user"));
+                .orElse(null);
+        if (account == null) {
+            throw new ResourceNotFoundException("Account not found for user ID: " + userEntity.getId());
+        }
 
         return transactionHistoryRepository
                 .findByAccountId(account.getId())

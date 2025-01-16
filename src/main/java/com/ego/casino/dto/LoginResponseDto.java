@@ -10,6 +10,10 @@ public class LoginResponseDto {
         this.token = token;
     }
 
+    public LoginResponseDto(String message){
+        this.message = message;
+    }
+
     public String getToken() {
         return token;
     }

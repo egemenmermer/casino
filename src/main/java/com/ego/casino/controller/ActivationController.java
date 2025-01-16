@@ -4,6 +4,9 @@ import com.ego.casino.dto.ActivationRequestDto;
 import com.ego.casino.dto.ActivationResponseDto;
 import com.ego.casino.dto.RegisterRequestDto;
 import com.ego.casino.dto.RegisterResponseDto;
+import com.ego.casino.exception.AccountAlreadyActivatedException;
+import com.ego.casino.exception.AccountNotFoundException;
+import com.ego.casino.exception.ActivationFailedException;
 import com.ego.casino.security.CustomUserDetails;
 import com.ego.casino.service.AuthService;
 import com.ego.casino.service.Impl.AuthServiceImpl;
@@ -25,7 +28,15 @@ public class ActivationController {
     @Operation(summary = "Activate Account")
     @PostMapping
     public ResponseEntity<ActivationResponseDto> activate(@RequestBody ActivationRequestDto activationRequestDto) {
-        authService.activate(activationRequestDto);
-        return ResponseEntity.ok(new ActivationResponseDto("Account Activated!"));
+        try {
+            authService.activate(activationRequestDto);
+            return ResponseEntity.ok(new ActivationResponseDto("Account Activated!"));
+        } catch (AccountAlreadyActivatedException ex) {
+            throw new AccountAlreadyActivatedException("The account is already activated.");
+        } catch (AccountNotFoundException ex) {
+            throw new AccountNotFoundException("Account not found for email: " + activationRequestDto.getEmail());
+        } catch (Exception ex) {
+            throw new ActivationFailedException("Failed to activate account: " + ex.getMessage());
+        }
     }
 }

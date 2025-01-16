@@ -48,11 +48,11 @@ public class GameHistoryServiceImpl implements GameHistoryService {
     public List<GameHistoryDto> getHistory(CustomUserDetails userDetails, Long accountId) {
 
         UserEntity userEntity = userService.getUserByEmail(userDetails.getEmail());
-        AccountEntity accountEntity = accountService.findAccountByUserId(userEntity, accountId)
-                .orElseThrow(() -> new ResourceNotFoundException("Account not found for this user"));
 
-        return gameHistoryRepository
-                .findByAccountId(accountEntity.getId())
+        AccountEntity accountEntity = accountService.findAccountByUserId(userEntity, accountId)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found for the user with ID: " + accountId));
+
+        List<GameHistoryDto> gameHistory = gameHistoryRepository.findByAccountId(accountEntity.getId())
                 .stream()
                 .map(gameHistoryEntity -> new GameHistoryDto(
                         gameHistoryEntity.getId(),
@@ -64,5 +64,7 @@ public class GameHistoryServiceImpl implements GameHistoryService {
                         gameHistoryEntity.getGame()
                 ))
                 .collect(Collectors.toList());
+
+        return gameHistory;
     }
 }

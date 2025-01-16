@@ -11,6 +11,10 @@ public class RegisterResponseDto {
         this.message = message;
     }
 
+    public RegisterResponseDto(String message){
+        this.message = message;
+    }
+
     public RegisterResponseDto() {
     }
 

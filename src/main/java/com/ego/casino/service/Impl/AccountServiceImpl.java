@@ -4,6 +4,8 @@ import com.ego.casino.dto.*;
 import com.ego.casino.entity.AccountEntity;
 import com.ego.casino.entity.UserEntity;
 import com.ego.casino.enums.TransactionType;
+import com.ego.casino.exception.AccountNotFoundException;
+import com.ego.casino.exception.InvalidDepositAmountException;
 import com.ego.casino.exception.ResourceNotFoundException;
 import com.ego.casino.repository.AccountRepository;
 import com.ego.casino.security.CustomUserDetails;
@@ -38,22 +40,21 @@ public class AccountServiceImpl implements AccountService {
     public AccountDto getBalance(CustomUserDetails userDetails, Long accountId) {
         UserEntity userEntity = userService.getUserByEmail(userDetails.getEmail());
         AccountEntity account = findAccountByUserId(userEntity, accountId)
-                .orElseThrow(() -> new ResourceNotFoundException("Account not found for this user"));
+                .orElseThrow(() -> new AccountNotFoundException("Account not found for this user"));
 
-        AccountDto accountDto = new AccountDto(account.getId(), account.getBalance());
-        return accountDto;
+        return new AccountDto(account.getId(), account.getBalance());
     }
 
     @Override
     @Transactional
     public DepositResponseDto deposit(CustomUserDetails userDetails, Long accountId, BigDecimal amount, TransactionType transactionType) {
+        if(amount.compareTo(BigDecimal.ZERO) < 0){
+            throw new InvalidDepositAmountException("Deposit amount must be greater than zero");
+        }
+
         UserEntity userEntity = userService.getUserByEmail(userDetails.getEmail());
         AccountEntity account = findAccountByUserId(userEntity, accountId)
-                .orElseThrow(() -> new ResourceNotFoundException("Account not found for this user"));
-
-        if(amount.compareTo(BigDecimal.ZERO) < 0){
-            return (DepositResponseDto) ResponseEntity.status(HttpStatus.BAD_REQUEST);
-        }
+                .orElseThrow(() -> new AccountNotFoundException("Account not found for this user"));
 
         account.setBalance(account.getBalance().add(amount));
         account.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
@@ -66,14 +67,13 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public WithdrawResponseDto withdraw(CustomUserDetails userDetails ,Long accountId, BigDecimal amount, TransactionType transactionType) {
+        if(amount.compareTo(BigDecimal.ZERO) < 0){
+            throw new InvalidDepositAmountException("Withdraw amount must be greater than zero");
+        }
+
         UserEntity userEntity = userService.getUserByEmail(userDetails.getEmail());
         AccountEntity account = findAccountByUserId(userEntity, accountId)
-                .orElseThrow(() -> new ResourceNotFoundException("Account not found for this user"));
-
-
-        if(amount.compareTo(BigDecimal.ZERO) < 0){
-            return (WithdrawResponseDto) ResponseEntity.status(HttpStatus.BAD_REQUEST);
-        }
+                .orElseThrow(() -> new AccountNotFoundException("Account not found for this user"));
 
         account.setBalance(account.getBalance().subtract(amount));
         account.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
@@ -102,6 +102,7 @@ public class AccountServiceImpl implements AccountService {
     public AccountCreateResponseDto createAccount(CustomUserDetails user) {
         UserEntity userEntity = userService.findByEmail(user.getEmail());
         AccountEntity account = new AccountEntity();
+
         account.setUserId(userEntity);
         account.setBalance(BigDecimal.ZERO);
         account.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));

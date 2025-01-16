@@ -25,6 +25,10 @@ public class PlayGameResponseDto {
         this.newBalance = newBalance;
     }
 
+    public PlayGameResponseDto(String message){
+        this.message = message;
+    }
+
     public PlayGameResponseDto() {
     }
 

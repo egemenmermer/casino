@@ -2,6 +2,7 @@ package com.ego.casino.controller;
 
 import com.ego.casino.dto.UserDto;
 import com.ego.casino.entity.UserEntity;
+import com.ego.casino.exception.UserNotFoundException;
 import com.ego.casino.security.CurrentUser;
 import com.ego.casino.security.CustomUserDetails;
 import com.ego.casino.service.Impl.UserServiceImpl;
@@ -25,12 +26,14 @@ public class UserController {
     @GetMapping("/me")
     @Operation(summary = "Get Me")
     public ResponseEntity<UserDto> getMe(@CurrentUser CustomUserDetails currentUser) {
-        UserEntity user = userService.getUserByEmail(currentUser.getEmail());
-        if (user == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        try {
+            UserEntity user = userService.getUserByEmail(currentUser.getEmail());
+            return ResponseEntity.ok(new UserDto(user.getId(), currentUser.getEmail()));
+        } catch (UserNotFoundException e) {
+            throw new UserNotFoundException("User not found for email: " + currentUser.getEmail());
+        } catch (Exception e) {
+            throw new RuntimeException("Unexpected error occurred while fetching user details");
         }
-
-        return ResponseEntity.ok(new UserDto(user.getId(), currentUser.getEmail()));
     }
 
 
