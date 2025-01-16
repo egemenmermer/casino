@@ -9,6 +9,7 @@ import com.ego.casino.exception.WeakPasswordException;
 import com.ego.casino.security.CustomUserDetails;
 import com.ego.casino.service.Impl.AuthServiceImpl;
 import com.ego.casino.util.JwtTokenUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ public class RegisterController {
     private JwtTokenUtil jwtTokenUtil;
 
     @PostMapping
+    @Operation(summary = "Register")
     public ResponseEntity<RegisterResponseDto> register(
             @RequestBody RegisterRequestDto registerRequestDto) {
         try {

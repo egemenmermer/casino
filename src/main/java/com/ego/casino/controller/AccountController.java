@@ -21,8 +21,8 @@ public class AccountController {
     @Autowired
     private AccountServiceImpl accountService;
 
-    @Operation(summary = "Deposit", description = "Deposit by AccountID")
     @PostMapping("/{account_id}/deposit")
+    @Operation(summary = "Deposit", description = "Deposit by AccountID")
     public ResponseEntity<DepositResponseDto> deposit(
             @CurrentUser CustomUserDetails currentUser,
             @PathVariable Long account_id,
@@ -35,8 +35,8 @@ public class AccountController {
         }
     }
 
-    @Operation(summary = "Withdraw", description = "Withdraw by AccountID")
     @PostMapping("/{account_id}/withdraw")
+    @Operation(summary = "Withdraw", description = "Withdraw by AccountID")
     public ResponseEntity<WithdrawResponseDto> withdraw(
             @CurrentUser CustomUserDetails currentUser,
             @PathVariable Long account_id,
@@ -49,8 +49,8 @@ public class AccountController {
         }
     }
 
-    @Operation(summary = "Get Account")
     @GetMapping("/{account_id}")
+    @Operation(summary = "Get Account")
     public ResponseEntity<AccountDto> getBalance(
             @CurrentUser CustomUserDetails userDetails,
             @PathVariable Long account_id) {
@@ -61,8 +61,8 @@ public class AccountController {
         }
     }
 
-    @Operation(summary = "Get Transaction History")
     @GetMapping("/{account_id}/transactions")
+    @Operation(summary = "Get Transaction History")
     public ResponseEntity<List<TransactionHistoryDto>> getTransactionHistory(
             @CurrentUser CustomUserDetails userDetails,
             @PathVariable Long account_id) {
@@ -73,8 +73,8 @@ public class AccountController {
         }
     }
 
-    @Operation(summary = "Create Account")
     @PostMapping("/create")
+    @Operation(summary = "Create Account")
     public ResponseEntity<AccountCreateResponseDto> createAccount(
             @CurrentUser CustomUserDetails userDetails) {
         try {

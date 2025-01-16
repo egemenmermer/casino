@@ -8,6 +8,7 @@ import com.ego.casino.exception.UserNotFoundException;
 import com.ego.casino.security.CustomUserDetails;
 import com.ego.casino.service.Impl.AuthServiceImpl;
 import com.ego.casino.util.JwtTokenUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class LoginController {
     private JwtTokenUtil jwtTokenUtil;
 
     @PostMapping
+    @Operation(summary = "Login")
     public ResponseEntity<LoginResponseDto> login(
             @RequestBody LoginRequestDto loginRequestDto) {
         try {

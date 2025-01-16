@@ -25,8 +25,8 @@ public class ActivationController {
     @Autowired
     private AuthServiceImpl authService;
 
-    @Operation(summary = "Activate Account")
     @PostMapping
+    @Operation(summary = "Activate Account")
     public ResponseEntity<ActivationResponseDto> activate(
             @RequestBody ActivationRequestDto activationRequestDto) {
         try {
