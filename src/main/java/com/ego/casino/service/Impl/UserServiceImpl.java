@@ -1,22 +1,16 @@
 package com.ego.casino.service.Impl;
 
-import com.ego.casino.dto.GameHistoryDto;
 import com.ego.casino.dto.UserDto;
 import com.ego.casino.entity.UserEntity;
 import com.ego.casino.exception.AccountNotFoundException;
 import com.ego.casino.exception.UserNotFoundException;
-import com.ego.casino.repository.GameHistoryRepository;
 import com.ego.casino.repository.UserRepository;
 import com.ego.casino.security.CustomUserDetails;
 import com.ego.casino.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -35,18 +29,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity findByEmail(String email) {
         UserEntity user = userRepository.findByEmail(email);
-        if (user == null) {
-            throw new UserNotFoundException("User not found for email: " + email);
-        }
         return user;
     }
 
     @Override
     public UserEntity findByUsername(String username) {
         UserEntity user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw new UserNotFoundException("User not found for username: " + username);
-        }
         return user;
     }
 

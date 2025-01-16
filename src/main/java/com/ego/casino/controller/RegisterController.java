@@ -30,8 +30,8 @@ public class RegisterController {
 
     @PostMapping
     public ResponseEntity<RegisterResponseDto> register(@RequestBody RegisterRequestDto registerRequestDto) {
-            final String token = jwtTokenUtil.generateToken(new CustomUserDetails(registerRequestDto.getEmail(), registerRequestDto.getPassword()));
         try {
+            final String token = jwtTokenUtil.generateToken(new CustomUserDetails(registerRequestDto.getEmail(), registerRequestDto.getPassword()));
             authService.register(registerRequestDto, token);
             return ResponseEntity.ok(new RegisterResponseDto(token, "Registration successful!"));
         } catch (InvalidEmailFormatException e) {
@@ -43,6 +43,8 @@ public class RegisterController {
         } catch (DuplicateUsernameException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new RegisterResponseDto(e.getMessage()));
         } catch (Exception e) {
+            System.out.println("Unexpected error: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RegisterResponseDto("An unexpected error occurred"));
         }
     }

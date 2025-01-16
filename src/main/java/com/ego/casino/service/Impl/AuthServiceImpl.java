@@ -93,6 +93,11 @@ public class AuthServiceImpl implements AuthService {
         userEntity.setPassword(passwordEncoder.passwordEncoderBean().encode(password));
         userService.createUser(userEntity);
 
+        UserEntity savedUser = userService.findByEmail(email);
+        if (savedUser == null) {
+            throw new RuntimeException("User could not be saved or retrieved");
+        }
+
         mailService.sendMail(email, subject, content);
     }
 

@@ -6,15 +6,11 @@ import com.ego.casino.entity.UserEntity;
 import com.ego.casino.enums.TransactionType;
 import com.ego.casino.exception.AccountNotFoundException;
 import com.ego.casino.exception.InvalidDepositAmountException;
-import com.ego.casino.exception.ResourceNotFoundException;
 import com.ego.casino.repository.AccountRepository;
 import com.ego.casino.security.CustomUserDetails;
 import com.ego.casino.service.AccountService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -56,11 +52,13 @@ public class AccountServiceImpl implements AccountService {
         AccountEntity account = findAccountByUserId(userEntity, accountId)
                 .orElseThrow(() -> new AccountNotFoundException("Account not found for this user"));
 
+        BigDecimal oldBalance = account.getBalance();
+
         account.setBalance(account.getBalance().add(amount));
         account.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
         accountRepository.save(account);
 
-        transactionService.createTransaction(account, amount, account.getBalance(), transactionType, LocalDateTime.now());
+        transactionService.createTransaction(account, amount.doubleValue(), transactionType, LocalDateTime.now());
         return new DepositResponseDto(account.getId(),transactionType, LocalDateTime.now(),account.getBalance());
     }
 
@@ -75,9 +73,11 @@ public class AccountServiceImpl implements AccountService {
         AccountEntity account = findAccountByUserId(userEntity, accountId)
                 .orElseThrow(() -> new AccountNotFoundException("Account not found for this user"));
 
+        BigDecimal oldBalance = account.getBalance();
+
         account.setBalance(account.getBalance().subtract(amount));
         account.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
-        transactionService.createTransaction(account, amount, account.getBalance(), transactionType, LocalDateTime.now());
+        transactionService.createTransaction(account, amount.negate().doubleValue(), transactionType, LocalDateTime.now());
         return new WithdrawResponseDto(account.getId(),transactionType, LocalDateTime.now(),account.getBalance());
 
     }

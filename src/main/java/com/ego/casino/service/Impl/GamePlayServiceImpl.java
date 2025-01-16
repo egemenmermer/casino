@@ -56,10 +56,20 @@ public class GamePlayServiceImpl implements GamePlayService {
 
         BigDecimal oldBalance = accountEntity.getBalance();
         BigDecimal newBalance = calculateNewBalance(accountEntity.getBalance(), playGameRequestDto.getBetAmount(), gameEntity.getWinChance().doubleValue(), result);
+
         String status = result ? "WIN" : "LOSE";
 
+        BigDecimal profit = oldBalance.subtract(newBalance);
+
+        if (result) {
+            double winAmount = calculateWinAmount(playGameRequestDto.getBetAmount(), gameEntity.getWinChance().doubleValue());
+            profit = BigDecimal.valueOf(winAmount).subtract(BigDecimal.valueOf(playGameRequestDto.getBetAmount()));
+        } else {
+            profit = BigDecimal.valueOf(-playGameRequestDto.getBetAmount());
+        }
+
         gameHistoryService.createGameHistory(accountEntity, gameEntity, accountEntity.getBalance(), newBalance, playGameRequestDto, status);
-        transactionService.createTransaction(accountEntity, BigDecimal.valueOf(playGameRequestDto.getBetAmount()), newBalance, TransactionType.BET, LocalDateTime.now());
+        transactionService.createTransaction(accountEntity, profit.doubleValue(), TransactionType.BET, LocalDateTime.now());
         accountService.updateBalance(accountEntity, newBalance);
 
         return new PlayGameResponseDto(

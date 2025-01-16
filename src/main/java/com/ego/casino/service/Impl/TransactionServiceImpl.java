@@ -11,8 +11,6 @@ import com.ego.casino.security.CustomUserDetails;
 import com.ego.casino.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -36,11 +34,10 @@ public class TransactionServiceImpl implements TransactionService {
     private UserServiceImpl userService;
 
     @Override
-    public void createTransaction(AccountEntity account, BigDecimal amount, BigDecimal finalBalance, TransactionType transactionType, LocalDateTime created_at) {
+    public void createTransaction(AccountEntity account,Double profit, TransactionType transactionType, LocalDateTime created_at) {
         TransactionHistoryEntity transactionHistoryEntity = new TransactionHistoryEntity();
         transactionHistoryEntity.setAccount(account);
-        transactionHistoryEntity.setAmount(amount);
-        transactionHistoryEntity.setFinalBalance(finalBalance);
+        transactionHistoryEntity.setProfit(BigDecimal.valueOf(profit));
         transactionHistoryEntity.setKind(transactionType.toString());
         transactionHistoryEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
         transactionHistoryRepository.save(transactionHistoryEntity);
@@ -65,8 +62,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .map(transactionHistoryEntity -> new TransactionHistoryDto(
                         transactionHistoryEntity.getId(),
                         transactionHistoryEntity.getAccount(),
-                        transactionHistoryEntity.getAmount(),
-                        transactionHistoryEntity.getFinalBalance(),
+                        transactionHistoryEntity.getProfit(),
                         transactionHistoryEntity.getKind(),
                         transactionHistoryEntity.getCreatedAt()
                 ))

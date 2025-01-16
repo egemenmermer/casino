@@ -18,11 +18,8 @@ public class TransactionHistoryEntity {
     @JoinColumn(name = "account_id", nullable = false)
     private AccountEntity account;
 
-    @Column(name = "amount", nullable = false)
-    private BigDecimal amount;
-
-    @Column(name = "final_balance")
-    private BigDecimal finalBalance;
+    @Column(name = "profit")
+    private BigDecimal profit;
 
     @Column(nullable = false, name = "kind")
     private String kind;
@@ -30,11 +27,10 @@ public class TransactionHistoryEntity {
     @Column(nullable = false, name = "created_at")
     private Timestamp createdAt;
 
-    public TransactionHistoryEntity(Long id, AccountEntity account, BigDecimal amount, BigDecimal finalBalance, String kind, Timestamp createdAt) {
+    public TransactionHistoryEntity(Long id, AccountEntity account, BigDecimal profit, String kind, Timestamp createdAt) {
         this.id = id;
         this.account = account;
-        this.amount = amount;
-        this.finalBalance = finalBalance;
+        this.profit = profit;
         this.kind = kind;
         this.createdAt = createdAt;
     }
@@ -58,20 +54,12 @@ public class TransactionHistoryEntity {
         this.account = account;
     }
 
-    public BigDecimal getAmount() {
-        return amount;
+    public BigDecimal getProfit() {
+        return profit;
     }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public BigDecimal getFinalBalance() {
-        return finalBalance;
-    }
-
-    public void setFinalBalance(BigDecimal finalBalance) {
-        this.finalBalance = finalBalance;
+    public void setProfit(BigDecimal profit) {
+        this.profit = profit;
     }
 
     public String getKind() {

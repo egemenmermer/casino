@@ -12,19 +12,17 @@ public class TransactionHistoryDto {
 
     private Long id;
     private AccountEntity account;
-    private BigDecimal amount;
-    private BigDecimal finalBalance;
+    private BigDecimal profit;
     private String username;
     private Long accountId;
     private String kind;
     private Timestamp createdAt;
 
-    public TransactionHistoryDto(Long id, AccountEntity account, BigDecimal amount, BigDecimal finalBalance, String kind, Timestamp createdAt) {
+    public TransactionHistoryDto(Long id, AccountEntity account, BigDecimal profit, String kind, Timestamp createdAt) {
         this.id = id;
         this.accountId = account.getId();
         this.username = account.getUserId().getUsername();
-        this.amount = amount;
-        this.finalBalance = finalBalance;
+        this.profit = profit;
         this.kind = kind;
         this.createdAt = createdAt;
     }
@@ -60,24 +58,14 @@ public class TransactionHistoryDto {
         return account;
     }
 
-    public void setAccount(AccountEntity account) {
-        this.account = account;
+
+
+    public BigDecimal getProfit() {
+        return profit;
     }
 
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public BigDecimal getFinalBalance() {
-        return finalBalance;
-    }
-
-    public void setFinalBalance(BigDecimal finalBalance) {
-        this.finalBalance = finalBalance;
+    public void setProfit(BigDecimal finalBalance) {
+        this.profit = profit;
     }
 
     public String getKind() {
