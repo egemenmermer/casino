@@ -2,14 +2,8 @@ package com.ego.casino.entity;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.log4j.Log4j2;
-
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Builder

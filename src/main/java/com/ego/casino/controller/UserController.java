@@ -21,20 +21,15 @@ public class UserController {
     @Autowired
     private UserServiceImpl userService;
 
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-
 
     @GetMapping("/me")
     @Operation(summary = "Get Me")
     public ResponseEntity<UserDto> getMe(@CurrentUser CustomUserDetails currentUser) {
         UserEntity user = userService.getUserByEmail(currentUser.getEmail());
-
-        /*
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
-         */
+
         return ResponseEntity.ok(new UserDto(user.getId(), currentUser.getEmail()));
     }
 

@@ -24,10 +24,6 @@ public class LoginController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-    @Autowired
-    private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
-
-
     @PostMapping
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
         final String newToken = jwtTokenUtil.generateToken(new CustomUserDetails(loginRequestDto.getEmail(), loginRequestDto.getPassword()));

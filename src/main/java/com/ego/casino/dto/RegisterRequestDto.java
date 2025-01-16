@@ -3,14 +3,24 @@ package com.ego.casino.dto;
 public class RegisterRequestDto {
 
     private String email;
+    private String username;
     private String password;
 
-    public RegisterRequestDto(String email, String password) {
+    public RegisterRequestDto(String email, String username, String password) {
         this.email = email;
+        this.username = username;
         this.password = password;
     }
 
     public RegisterRequestDto() {
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {

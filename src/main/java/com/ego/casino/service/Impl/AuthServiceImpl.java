@@ -60,18 +60,25 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public void register(RegisterRequestDto registerRequestDto, String token) {
         String email = registerRequestDto.getEmail();
+        String username = registerRequestDto.getUsername();
         String password = registerRequestDto.getPassword();
+
         String subject = "Welcome to Bets10";
-        String content = "Hello " + registerRequestDto.getEmail() + ",\n\nYour registration was successful. "
+        String content = "Hello " + registerRequestDto.getUsername() + ",\n\nYour registration was successful. "
                 + "Activate your account with this token:\n\n" + token + "\n\nThank you!";
 
         if (userService.findByEmail(email) != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exist");
         }
 
+        if (userService.findByUsername(username) != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exist");
+        }
+
         UserEntity userEntity = new UserEntity();
 
         userEntity.setEmail(email);
+        userEntity.setUsername(username);
         userEntity.setPassword(passwordEncoder.passwordEncoderBean().encode(password));
         userService.createUser(userEntity);
 

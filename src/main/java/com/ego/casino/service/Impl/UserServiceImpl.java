@@ -24,16 +24,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUser(Long id) {
-        UserEntity user = userRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("User not found!")
-        );
-
+        UserEntity user = userRepository.findById(id);
         return new UserDto(user.getId(),user.getUsername());
     }
 
     @Override
     public UserEntity findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public UserEntity findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     @Override

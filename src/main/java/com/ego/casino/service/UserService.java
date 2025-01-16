@@ -12,9 +12,10 @@ import java.time.LocalDateTime;
 
 public interface UserService {
 
-    public UserDto getUser(Long id);
-    public UserEntity findByEmail(String email);
-    public void createUser(UserEntity userEntity);
+    UserDto getUser(Long id);
+    UserEntity findByEmail(String email);
+    UserEntity findByUsername(String username);
+    void createUser(UserEntity userEntity);
     CustomUserDetails getUserDetailsByEmail(String email);
     UserEntity getUserByEmail(String email);
 
