@@ -27,7 +27,8 @@ public class ActivationController {
 
     @Operation(summary = "Activate Account")
     @PostMapping
-    public ResponseEntity<ActivationResponseDto> activate(@RequestBody ActivationRequestDto activationRequestDto) {
+    public ResponseEntity<ActivationResponseDto> activate(
+            @RequestBody ActivationRequestDto activationRequestDto) {
         try {
             authService.activate(activationRequestDto);
             return ResponseEntity.ok(new ActivationResponseDto("Account Activated!"));

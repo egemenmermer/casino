@@ -25,7 +25,8 @@ public class UserController {
 
     @GetMapping("/me")
     @Operation(summary = "Get Me")
-    public ResponseEntity<UserDto> getMe(@CurrentUser CustomUserDetails currentUser) {
+    public ResponseEntity<UserDto> getMe(
+            @CurrentUser CustomUserDetails currentUser) {
         try {
             UserEntity user = userService.getUserByEmail(currentUser.getEmail());
             return ResponseEntity.ok(new UserDto(user.getId(), currentUser.getEmail()));

@@ -28,7 +28,9 @@ public class GameHistoryController {
     @GetMapping
     @ResponseBody
     @Operation(summary = "Get Game History")
-    public ResponseEntity<List<GameHistoryDto>> getHistory(@RequestParam Long account_id, @CurrentUser CustomUserDetails currentUser) {
+    public ResponseEntity<List<GameHistoryDto>> getHistory(
+            @RequestParam Long account_id,
+            @CurrentUser CustomUserDetails currentUser) {
         try {
             return ResponseEntity.ok(gameHistoryService.getHistory(currentUser, account_id));
         } catch (ResourceNotFoundException e) {

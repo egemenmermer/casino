@@ -54,12 +54,14 @@ public class WebSecurityConfig {
                         .requestMatchers(
                                 "/", "/api/v1/index", "/success", "/login", "/api/v1/games"
                                 , "/activate", "/api/v1/activate", "/api/v1/login",
-                                "/authenticate", "/register", "/api/v1/register", "/games",
-                                "/api/v1/auth/authenticate" ).permitAll()
+                                "/authenticate", "/register", "/api/v1/register", "/games")
+                        .permitAll()
                         .requestMatchers(
                                 "/swagger-ui/**", "/v3/api-docs/**", "/asm-swagger.html",
-                                "/api-docs/**", "/api-docs/swagger-config", "/asm-swagger").permitAll()
-                        .anyRequest().authenticated()
+                                "/api-docs/**", "/api-docs/swagger-config", "/asm-swagger")
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated()
                 )
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)

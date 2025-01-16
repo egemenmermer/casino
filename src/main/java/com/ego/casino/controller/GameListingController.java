@@ -36,7 +36,8 @@ public class GameListingController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get Game by ID")
-    public ResponseEntity<GameDto> getGameById(@PathVariable Long id) {
+    public ResponseEntity<GameDto> getGameById(
+            @PathVariable Long id) {
         try {
             GameDto game = gameListingService.getGameById(id);
             return new ResponseEntity<>(game, HttpStatus.OK);

@@ -29,7 +29,8 @@ public class LoginController {
     private JwtTokenUtil jwtTokenUtil;
 
     @PostMapping
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
+    public ResponseEntity<LoginResponseDto> login(
+            @RequestBody LoginRequestDto loginRequestDto) {
         try {
             String newToken = jwtTokenUtil.generateToken(
                     new CustomUserDetails(loginRequestDto.getEmail(), loginRequestDto.getPassword())
