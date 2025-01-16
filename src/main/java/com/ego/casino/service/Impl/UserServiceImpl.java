@@ -3,6 +3,7 @@ package com.ego.casino.service.Impl;
 import com.ego.casino.dto.GameHistoryDto;
 import com.ego.casino.dto.UserDto;
 import com.ego.casino.entity.UserEntity;
+import com.ego.casino.exception.AccountNotFoundException;
 import com.ego.casino.exception.UserNotFoundException;
 import com.ego.casino.repository.GameHistoryRepository;
 import com.ego.casino.repository.UserRepository;
@@ -25,10 +26,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUser(Long id) {
-        UserEntity user = userRepository.findById(id);
-        if (user == null) {
-            throw new UserNotFoundException("User not found for ID: " + id);
-        }
+        UserEntity user = userRepository.findById(id).orElseThrow(
+                () -> new AccountNotFoundException("User not found for ID: " + id));;
+
         return new UserDto(user.getId(), user.getUsername());
     }
 
