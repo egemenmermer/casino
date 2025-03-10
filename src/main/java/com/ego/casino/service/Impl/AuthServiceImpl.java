@@ -110,7 +110,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         if (user.getActivatedAt() != null) {
-            throw new AccountAlreadyActivatedException("Activation already activated");
+            throw new AccountAlreadyActivatedException("Account already activated");
         }
 
         try {
